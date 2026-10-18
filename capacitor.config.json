@@ -1,0 +1,15 @@
+{
+  "appId": "shop.ilseplacencia.socials",
+  "appName": "Ruefly",
+  "backgroundColor": "#FDFCF8",
+  "webDir": "dist",
+  "plugins": {
+    "FirebaseAuthentication": {
+      "skipNativeAuth": true,
+      "providers": [
+        "google.com",
+        "apple.com"
+      ]
+    }
+  }
+}

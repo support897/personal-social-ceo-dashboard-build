@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>316440145161-7l603ss7ughi86vufb2ctm5qf382hfb2.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.316440145161-7l603ss7ughi86vufb2ctm5qf382hfb2</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCdMVSt66qfvL4jhhg5m2Sa_p7KFJ-rGlI</string>
+	<key>GCM_SENDER_ID</key>
+	<string>316440145161</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>shop.ilseplacencia.socials</string>
+	<key>PROJECT_ID</key>
+	<string>ilse-socials</string>
+	<key>STORAGE_BUCKET</key>
+	<string>ilse-socials.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:316440145161:ios:e7617a0ddfb9d3792ab7d8</string>
+</dict>
+</plist>
