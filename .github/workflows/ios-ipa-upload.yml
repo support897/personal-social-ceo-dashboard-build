@@ -1,0 +1,145 @@
+name: iOS IPA
+
+# Manual run only. Builds the signed release IPA for the Ruefly store package.
+# Mirrors the programme's Android AAB workflow: signing material arrives from
+# repo secrets and never touches the repo itself.
+#
+# THE WEB TREE IS *NOT* BUILT FROM SOURCE HERE. This repo's committed src
+# lags the certified published build, and a source rebuild wrapped stale
+# bytes in the first IPA (Store Review delta — the pre-fixture demo). Instead
+# the workflow fetches the CERTIFIED tree — the exact dist bytes the
+# certified AAB wraps — from the public Pages repo support897/ruefly (the
+# tree publish_batch verifies into that repo on every publish), copies it
+# verbatim into dist/ and syncs it. The main chunk's md5 is printed in the
+# assemble step so the delta read can tie the IPA to the certified pin.
+# The assemble step also PROMOTES the app entry (app/index.html) to the
+# bundle root and hard-fails if the wrapped entry is not the app door
+# (build 2 cold-started the web landing and was withdrawn).
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Assemble the certified web tree and sync iOS
+        run: |
+          curl -fsSL https://codeload.github.com/support897/ruefly/tar.gz/refs/heads/main -o "$RUNNER_TEMP/certified.tgz"
+          mkdir -p certified-tree
+          tar -xzf "$RUNNER_TEMP/certified.tgz" -C certified-tree --strip-components=1
+          rm -rf dist
+          cp -r certified-tree dist
+          md5 -r dist/assets/main-*.js
+          # PROMOTE THE APP ENTRY to the bundle root. The certified tree's
+          # root index.html is the WEB LANDING; the app entry lives at
+          # app/index.html with parent-relative refs built for the Pages
+          # layout. Without this the shipped binary cold-starts the landing
+          # (Ruefly build 2, withdrawn 18 Oct 2026; same fault as NeedsMe).
+          perl -pe 's|\.\./|./|g' dist/app/index.html > dist/index.html.promoted
+          mv dist/index.html.promoted dist/index.html
+          # HARD CHECK: fail the run if the wrapped entry is not Ruefly's door.
+          grep -q 'id="app"' dist/index.html
+          grep -q 'assets/main-' dist/index.html
+          if grep -q 'Open the app' dist/index.html; then echo "ENTRY CHECK FAILED: landing wrapped as entry" >&2; exit 1; fi
+          if grep -q 'your socials team, in one calm place' dist/index.html; then echo "ENTRY CHECK FAILED: landing wrapped as entry" >&2; exit 1; fi
+          npx cap sync ios
+          # HARD CHECK on the synced bundle that actually ships.
+          grep -q 'id="app"' ios/App/App/public/index.html
+          grep -q 'assets/main-' ios/App/App/public/index.html
+          if grep -q 'Open the app' ios/App/App/public/index.html; then echo "SYNCED ENTRY CHECK FAILED: landing in shipped bundle" >&2; exit 1; fi
+
+      - name: Write signing material from secrets
+        env:
+          DIST_CERT_P12_B64: ${{ secrets.DIST_CERT_P12_B64 }}
+          DIST_CERT_PASSWORD: ${{ secrets.DIST_CERT_PASSWORD }}
+          PROVISIONING_PROFILE_B64: ${{ secrets.PROVISIONING_PROFILE_B64 }}
+        run: |
+          echo "$DIST_CERT_P12_B64" | base64 -d > "$RUNNER_TEMP/dist.p12"
+          echo "$PROVISIONING_PROFILE_B64" | base64 -d > "$RUNNER_TEMP/profile.mobileprovision"
+          security create-keychain -p "" "$RUNNER_TEMP/build.keychain-db"
+          security set-keychain-settings -lut 21600 "$RUNNER_TEMP/build.keychain-db"
+          security unlock-keychain -p "" "$RUNNER_TEMP/build.keychain-db"
+          security import "$RUNNER_TEMP/dist.p12" -P "$DIST_CERT_PASSWORD" -A -t cert -f pkcs12 -k "$RUNNER_TEMP/build.keychain-db"
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "" "$RUNNER_TEMP/build.keychain-db"
+          security list-keychains -d user -s "$RUNNER_TEMP/build.keychain-db" login.keychain-db
+          mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
+          security cms -D -i "$RUNNER_TEMP/profile.mobileprovision" > "$RUNNER_TEMP/profile.plist"
+          PROFILE_UUID=$(plutil -extract UUID raw "$RUNNER_TEMP/profile.plist")
+          cp "$RUNNER_TEMP/profile.mobileprovision" "$HOME/Library/MobileDevice/Provisioning Profiles/$PROFILE_UUID.mobileprovision"
+
+      - name: Switch the App target to manual distribution signing (CI copy only)
+        run: |
+          perl -pi -e 's/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Manual;\n\t\t\t\tDEVELOPMENT_TEAM = GZ9Z6BPTFR;\n\t\t\t\tPROVISIONING_PROFILE_SPECIFIER = "Ruefly App Store";/' ios/App/App.xcodeproj/project.pbxproj
+          perl -pi -e 's/CODE_SIGN_IDENTITY = "iPhone Developer";/CODE_SIGN_IDENTITY = "Apple Distribution";/' ios/App/App.xcodeproj/project.pbxproj
+          grep -E "CODE_SIGN_STYLE|DEVELOPMENT_TEAM|PROVISIONING_PROFILE_SPECIFIER" ios/App/App.xcodeproj/project.pbxproj | sort -u
+
+      - name: Archive the app (Release, distribution signing)
+        run: |
+          xcodebuild archive \
+            -project ios/App/App.xcodeproj \
+            -scheme App \
+            -configuration Release \
+            -destination "generic/platform=iOS" \
+            -archivePath "$RUNNER_TEMP/App.xcarchive"
+
+      - name: Export the IPA
+        run: |
+          cat > "$RUNNER_TEMP/ExportOptions.plist" <<'EOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>app-store-connect</string>
+            <key>teamID</key>
+            <string>GZ9Z6BPTFR</string>
+            <key>signingStyle</key>
+            <string>manual</string>
+            <key>stripSwiftSymbols</key>
+            <true/>
+            <key>manageAppVersionAndBuildNumber</key>
+            <false/>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>shop.ilseplacencia.socials</key>
+              <string>Ruefly App Store</string>
+            </dict>
+          </dict>
+          </plist>
+          EOF
+          xcodebuild -exportArchive \
+            -archivePath "$RUNNER_TEMP/App.xcarchive" \
+            -exportPath "$RUNNER_TEMP/export" \
+            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist"
+          ls -la "$RUNNER_TEMP/export"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ruefly-release-ipa
+          path: ${{ runner.temp }}/export/*.ipa
+          if-no-files-found: error
+          retention-days: 30
+      - name: Upload to App Store Connect
+        env:
+          ASC_API_KEY_ID: ${{ secrets.ASC_API_KEY_ID }}
+          ASC_API_ISSUER_ID: ${{ secrets.ASC_API_ISSUER_ID }}
+          ASC_API_KEY_P8_B64: ${{ secrets.ASC_API_KEY_P8_B64 }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$HOME/.appstoreconnect/private_keys"
+          echo -n "$ASC_API_KEY_P8_B64" | base64 --decode -o "$HOME/.appstoreconnect/private_keys/AuthKey_${ASC_API_KEY_ID}.p8"
+          set +e
+          xcrun altool --upload-app -f "$RUNNER_TEMP/export/App.ipa" -t ios --apiKey "$ASC_API_KEY_ID" --apiIssuer "$ASC_API_ISSUER_ID"
+          ALTOOL_STATUS=$?
+          set -e
+          echo "altool exit code: $ALTOOL_STATUS"
+          exit "$ALTOOL_STATUS"
