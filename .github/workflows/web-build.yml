@@ -1,0 +1,20 @@
+name: Web build (Ruefly dist-pages)
+on: workflow_dispatch
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build web tree
+        working-directory: websrc
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build:pages
+      - name: Upload dist-pages
+        uses: actions/upload-artifact@v4
+        with:
+          name: ruefly-dist-pages
+          path: websrc/dist-pages
