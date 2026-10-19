@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import "./styles.css";
 import { LIVE, SUPABASE_URL, SUPABASE_ANON_KEY, FUNCTIONS_URL } from "./config.js";
-import { FIREBASE_ON, watchFirebaseUser, completeEmailLink, signUpWithPassword, signInWithPassword, sendPasswordReset, signInGoogle, signInApple, signOutUser, signInDemoAnon, reauthenticateCurrentUser, deleteCurrentUser } from "app-firebase";
+import { FIREBASE_ON, watchFirebaseUser, completeEmailLink, signUpWithPassword, signInWithPassword, sendPasswordReset, signInGoogle, signInApple, signOutUser, signInDemoAnon, reauthenticateCurrentUser, deleteCurrentUser, withTimeout } from "app-firebase";
 import { SEED } from "./seed-data.js";
 import { workerSubLinksHtml, renderWorkerPage, workerGroupsHtml, refreshWorkerGroups, sideRoomsHtml, supervisorPanelHtml, homeRoomsPanelHtml, workerCard, fetchRoomHome, touchUpWorkerScans } from "./room-pages.js";
 import { postingNavHtml, renderPostingPage } from "./social-pages.js";
@@ -1148,26 +1148,26 @@ async function enterUserMode() {
       // Demo door: unlock FIRST (the rules deny an anon session any
       // read/write under users/ until its unlock record's hash
       // matches _demo/config), then seed on first visit only.
-      try { await store.unlockDemo(fbUser, demoCode || store.DEMO_CODE_PLACEHOLDER); }
+      try { await withTimeout(store.unlockDemo(fbUser, demoCode || store.DEMO_CODE_PLACEHOLDER), 15000, "entry-timeout"); }
       catch (e) { unlockFailed = true; throw e; }
-      loaded = await store.loadUserSpace(fbUser).catch(async (e) => {
+      loaded = await withTimeout(store.loadUserSpace(fbUser), 20000, "entry-timeout").catch(async (e) => {
         if (!e || e.message !== "demo-not-unlocked") throw e;
         await store.seedDemoSpace(fbUser);
-        return store.loadUserSpace(fbUser);
+        return withTimeout(store.loadUserSpace(fbUser), 20000, "entry-timeout");
       });
     } else {
       // Door v4: no name gate at entry, and no peek. The load
       // creates the profile (a provider displayName rides its
       // first write inside loadUserSpace, as before); the tour
       // decided below asks the name inside the app.
-      loaded = await store.loadUserSpace(fbUser);
+      loaded = await withTimeout(store.loadUserSpace(fbUser), 20000, "entry-timeout");
     }
     DATA = loaded.data;
     userProfile = loaded.profile;
     // The entitlement record rides entry for real accounts (the
     // demo's fabricated space holds none). A refused or missing
     // read is null — plans.js fails paid closed on it.
-    entitlement = fbUser.isAnonymous ? null : await store.loadEntitlement(fbUser).catch(() => null);
+    entitlement = fbUser.isAnonymous ? null : await withTimeout(store.loadEntitlement(fbUser), 10000, "entry-timeout").catch(() => null);
     // RevenueCat attach (enabling build): configure with the uid as
     // the RC app user id and load the Current offering, off the
     // entry path — a failure here never blocks the door.
@@ -2350,8 +2350,33 @@ try { window.__rueflySetLang = setLang; } catch {}
 // never the signed-out door. A returning user whose session is
 // still restoring used to see the full sign-in door for seconds
 // and believe they were signed out.
+// BOOT RESILIENCE (her phone finding, build 13, 19 Oct): the splash
+// is a BOUNDED wait now. The first auth answer normally lands in a
+// blink; if the SDK chain stalls on a real device (its persistence
+// layer inside WKWebView is the flaky step), the splash must not be
+// a life sentence — after the bound, the real door paints with the
+// honest still-connecting line, and the watcher (whenever it does
+// answer) routes from there exactly as it always has.
+const BOOT_FALLBACK_MS = 6000;
+let bootFallbackTimer = null;
+let bootSlowShown = false;
+function armBootFallback() {
+  clearTimeout(bootFallbackTimer);
+  bootFallbackTimer = setTimeout(() => {
+    if (fbUser === undefined && accountMode !== "user") {
+      // The line rides fbMsg: it is the door's own status line
+      // (renderLogin's message argument is not painted on step 1).
+      bootSlowShown = true;
+      fbMsg = t("door.slowLine");
+      renderLogin();
+    }
+  }, BOOT_FALLBACK_MS);
+}
+function clearBootFallback() { clearTimeout(bootFallbackTimer); bootFallbackTimer = null; }
+
 function renderBootSplash() {
   applyDocLang();
+  armBootFallback();
   $("#app").innerHTML = `
   <main class="door-wrap">
     <section class="door-page">
@@ -2449,6 +2474,10 @@ let fbMsg = "";
 if (FIREBASE_ON) {
   let fbKnown = false;
   watchFirebaseUser((u) => {
+    clearBootFallback();
+    // The answer landed: the still-connecting line has done its
+    // job and must not linger under a door that now knows.
+    if (bootSlowShown) { bootSlowShown = false; fbMsg = ""; }
     const firstKnown = !fbKnown;
     fbKnown = true;
     fbUser = u;
@@ -2460,7 +2489,7 @@ if (FIREBASE_ON) {
     if (firstKnown && accountMode !== "user") { renderLogin(); return; }
     if (accountMode === "user") { exitUserMode(t("auth.signedOut")); return; }
     if (route().page === "account" && document.querySelector("#content")) renderContent(route());
-  });
+  }).catch(() => {});
   completeEmailLink().then((u) => { if (u) fbMsg = t("auth.signedIn"); }).catch(() => {});
 }
 boot();

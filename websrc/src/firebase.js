@@ -17,13 +17,36 @@ const cfg = {
 };
 export const FIREBASE_ON = Boolean(cfg.apiKey && cfg.projectId && cfg.appId);
 
+// BOOT RESILIENCE (her phone finding, build 13, 19 Oct): every SDK
+// wait in this module is BOUNDED. On a real device the web SDK's
+// auth chain can stall without ever settling (its persistence
+// layer inside WKWebView is the flaky step) — an unbounded await
+// here is what stranded the boot splash on "One moment…" forever,
+// and the same shape hangs a native door tap when the plugin's
+// promise never settles. withTimeout turns a silent hang into a
+// named, honest failure the callers already know how to show; a
+// timed-out module promise is FORGOTTEN, so the next call retries
+// the load instead of inheriting the wedge.
+export function withTimeout(promise, ms, label) {
+  let timer = null;
+  const bound = new Promise((_, reject) => {
+    timer = setTimeout(() => reject(new Error(label || "sdk-timeout")), ms);
+  });
+  return Promise.race([promise, bound]).finally(() => clearTimeout(timer));
+}
+
 let appPromise = null;
 export async function firebaseApp() {
   if (!FIREBASE_ON) return null;
   if (!appPromise) {
     appPromise = import("firebase/app").then(({ initializeApp }) => initializeApp(cfg));
   }
-  return appPromise;
+  try {
+    return await withTimeout(appPromise, 10000, "app-timeout");
+  } catch (e) {
+    if (e && e.message === "app-timeout") appPromise = null;
+    throw e;
+  }
 }
 
 let authPromise = null;
@@ -31,9 +54,26 @@ export async function firebaseAuth() {
   const app = await firebaseApp();
   if (!app) return null;
   if (!authPromise) {
-    authPromise = import("firebase/auth").then(({ getAuth }) => getAuth(app));
+    authPromise = import("firebase/auth").then((mod) => {
+      // Persistence is named, not defaulted: the default chain
+      // settles through IndexedDB, the layer that can stall inside
+      // WKWebView under the packaged app's scheme. Browser-local
+      // persistence is the reliable settler in that webview (and
+      // works identically on the open web). If Auth was already
+      // initialised by an earlier race, getAuth returns it.
+      try {
+        return mod.initializeAuth(app, { persistence: mod.browserLocalPersistence });
+      } catch {
+        return mod.getAuth(app);
+      }
+    });
   }
-  return authPromise;
+  try {
+    return await withTimeout(authPromise, 10000, "auth-timeout");
+  } catch (e) {
+    if (e && e.message === "auth-timeout") authPromise = null;
+    throw e;
+  }
 }
 
 // Firestore (P3): the per-user data base. The uid keys every record —
@@ -135,7 +175,7 @@ export async function signInGoogle() {
   if (!auth) throw new Error("accounts-off");
   const plug = nativeAuthPlugin();
   if (plug) {
-    const result = await plug.signInWithGoogle();
+    const result = await withTimeout(plug.signInWithGoogle(), 45000, "native-timeout");
     const idToken = result && result.credential && result.credential.idToken;
     if (!idToken) throw new Error("native-no-token");
     const { GoogleAuthProvider, signInWithCredential } = await import("firebase/auth");
@@ -152,7 +192,7 @@ export async function signInApple() {
   if (!auth) throw new Error("accounts-off");
   const plug = nativeAuthPlugin();
   if (plug) {
-    const result = await plug.signInWithApple();
+    const result = await withTimeout(plug.signInWithApple(), 45000, "native-timeout");
     const pc = (result && result.credential) || {};
     if (!pc.idToken) throw new Error("native-no-token");
     const { OAuthProvider, signInWithCredential } = await import("firebase/auth");
@@ -219,7 +259,7 @@ export async function reauthenticateCurrentUser(password) {
   if (providers.includes("google.com")) {
     const plug = nativeAuthPlugin();
     if (plug) {
-      const result = await plug.signInWithGoogle();
+      const result = await withTimeout(plug.signInWithGoogle(), 45000, "native-timeout");
       const idToken = result && result.credential && result.credential.idToken;
       if (!idToken) throw new Error("native-no-token");
       await reauthenticateWithCredential(user, GoogleAuthProvider.credential(idToken));
@@ -231,7 +271,7 @@ export async function reauthenticateCurrentUser(password) {
   if (providers.includes("apple.com")) {
     const plug = nativeAuthPlugin();
     if (plug) {
-      const result = await plug.signInWithApple();
+      const result = await withTimeout(plug.signInWithApple(), 45000, "native-timeout");
       const pc = (result && result.credential) || {};
       if (!pc.idToken) throw new Error("native-no-token");
       const provider = new OAuthProvider("apple.com");
