@@ -122,7 +122,7 @@ export async function completeEmailLink() {
   try { email = localStorage.getItem("fb_link_email"); } catch {}
   if (!email) email = window.prompt("Your email, to finish signing in");
   if (!email) return null;
-  const cred = await signInWithEmailLink(auth, email, window.location.href);
+  const cred = await withTimeout(signInWithEmailLink(auth, email, window.location.href), 30000, "door-timeout");
   try { localStorage.removeItem("fb_link_email"); } catch {}
   return cred.user;
 }
@@ -134,7 +134,7 @@ export async function signUpWithPassword(email, password) {
   const auth = await firebaseAuth();
   if (!auth) throw new Error("accounts-off");
   const { createUserWithEmailAndPassword } = await import("firebase/auth");
-  const cred = await createUserWithEmailAndPassword(auth, email, password);
+  const cred = await withTimeout(createUserWithEmailAndPassword(auth, email, password), 30000, "door-timeout");
   return cred.user;
 }
 
@@ -142,7 +142,7 @@ export async function signInWithPassword(email, password) {
   const auth = await firebaseAuth();
   if (!auth) throw new Error("accounts-off");
   const { signInWithEmailAndPassword } = await import("firebase/auth");
-  const cred = await signInWithEmailAndPassword(auth, email, password);
+  const cred = await withTimeout(signInWithEmailAndPassword(auth, email, password), 30000, "door-timeout");
   return cred.user;
 }
 
@@ -152,7 +152,7 @@ export async function sendPasswordReset(email) {
   const auth = await firebaseAuth();
   if (!auth) throw new Error("accounts-off");
   const { sendPasswordResetEmail } = await import("firebase/auth");
-  await sendPasswordResetEmail(auth, email);
+  await withTimeout(sendPasswordResetEmail(auth, email), 30000, "door-timeout");
   return true;
 }
 
@@ -179,7 +179,7 @@ export async function signInGoogle() {
     const idToken = result && result.credential && result.credential.idToken;
     if (!idToken) throw new Error("native-no-token");
     const { GoogleAuthProvider, signInWithCredential } = await import("firebase/auth");
-    const cred = await signInWithCredential(auth, GoogleAuthProvider.credential(idToken));
+    const cred = await withTimeout(signInWithCredential(auth, GoogleAuthProvider.credential(idToken)), 30000, "door-timeout");
     return cred.user;
   }
   const { GoogleAuthProvider, signInWithPopup } = await import("firebase/auth");
@@ -198,7 +198,7 @@ export async function signInApple() {
     const { OAuthProvider, signInWithCredential } = await import("firebase/auth");
     // The plugin's nonce IS the raw nonce: pass it verbatim, never hashed.
     const provider = new OAuthProvider("apple.com");
-    const cred = await signInWithCredential(auth, provider.credential({ idToken: pc.idToken, rawNonce: pc.nonce }));
+    const cred = await withTimeout(signInWithCredential(auth, provider.credential({ idToken: pc.idToken, rawNonce: pc.nonce })), 30000, "door-timeout");
     return cred.user;
   }
   const { OAuthProvider, signInWithPopup } = await import("firebase/auth");
@@ -213,7 +213,7 @@ export async function signInDemoAnon() {
   const auth = await firebaseAuth();
   if (!auth) throw new Error("accounts-off");
   const { signInAnonymously } = await import("firebase/auth");
-  const cred = await signInAnonymously(auth);
+  const cred = await withTimeout(signInAnonymously(auth), 30000, "door-timeout");
   return cred.user;
 }
 
@@ -225,7 +225,7 @@ export async function signOutUser() {
     try { await plug.signOut(); } catch {}
   }
   const { signOut } = await import("firebase/auth");
-  await signOut(auth);
+  await withTimeout(signOut(auth), 15000, "door-timeout");
 }
 
 // Account deletion (Apple closure F1): removing the sign-in itself.
@@ -253,7 +253,7 @@ export async function reauthenticateCurrentUser(password) {
       e.code = "auth/missing-password";
       throw e;
     }
-    await reauthenticateWithCredential(user, EmailAuthProvider.credential(user.email, password));
+    await withTimeout(reauthenticateWithCredential(user, EmailAuthProvider.credential(user.email, password)), 30000, "door-timeout");
     return "password";
   }
   if (providers.includes("google.com")) {
@@ -262,7 +262,7 @@ export async function reauthenticateCurrentUser(password) {
       const result = await withTimeout(plug.signInWithGoogle(), 45000, "native-timeout");
       const idToken = result && result.credential && result.credential.idToken;
       if (!idToken) throw new Error("native-no-token");
-      await reauthenticateWithCredential(user, GoogleAuthProvider.credential(idToken));
+      await withTimeout(reauthenticateWithCredential(user, GoogleAuthProvider.credential(idToken)), 30000, "door-timeout");
       return "google.com";
     }
     await reauthenticateWithPopup(user, new GoogleAuthProvider());
@@ -275,7 +275,7 @@ export async function reauthenticateCurrentUser(password) {
       const pc = (result && result.credential) || {};
       if (!pc.idToken) throw new Error("native-no-token");
       const provider = new OAuthProvider("apple.com");
-      await reauthenticateWithCredential(user, provider.credential({ idToken: pc.idToken, rawNonce: pc.nonce }));
+      await withTimeout(reauthenticateWithCredential(user, provider.credential({ idToken: pc.idToken, rawNonce: pc.nonce })), 30000, "door-timeout");
       return "apple.com";
     }
     await reauthenticateWithPopup(user, new OAuthProvider("apple.com"));
@@ -289,5 +289,5 @@ export async function reauthenticateCurrentUser(password) {
 export async function deleteCurrentUser() {
   const auth = await firebaseAuth();
   if (!auth || !auth.currentUser) throw new Error("accounts-off");
-  await auth.currentUser.delete();
+  await withTimeout(auth.currentUser.delete(), 30000, "door-timeout");
 }

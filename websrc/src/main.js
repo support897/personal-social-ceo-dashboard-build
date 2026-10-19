@@ -1142,7 +1142,7 @@ async function enterUserMode() {
   userEntering = true;
   let unlockFailed = false;
   try {
-    const store = await userStore();
+    const store = await withTimeout(userStore(), 10000, "entry-timeout");
     let loaded;
     if (fbUser.isAnonymous) {
       // Demo door: unlock FIRST (the rules deny an anon session any
@@ -1152,7 +1152,7 @@ async function enterUserMode() {
       catch (e) { unlockFailed = true; throw e; }
       loaded = await withTimeout(store.loadUserSpace(fbUser), 20000, "entry-timeout").catch(async (e) => {
         if (!e || e.message !== "demo-not-unlocked") throw e;
-        await store.seedDemoSpace(fbUser);
+        await withTimeout(store.seedDemoSpace(fbUser), 20000, "entry-timeout");
         return withTimeout(store.loadUserSpace(fbUser), 20000, "entry-timeout");
       });
     } else {
