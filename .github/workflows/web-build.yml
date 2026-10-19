@@ -13,8 +13,8 @@ jobs:
         working-directory: websrc
         run: |
           npm ci --legacy-peer-deps
-          npm run build -- --outDir ../dist-pages --emptyOutDir
-          npm run build -- --outDir ../dist-app --emptyOutDir
+          PRODUCT_BUILD=1 npm run build -- --outDir ../dist-pages --emptyOutDir
+          PRODUCT_BUILD=1 npm run build -- --outDir ../dist-app --emptyOutDir
       - uses: actions/upload-artifact@v4
         with:
           name: ruefly-dist-pages
