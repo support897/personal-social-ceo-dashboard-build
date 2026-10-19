@@ -65,7 +65,6 @@ export const STRINGS = {
 
     // ---- the door (page 1 + step 2 + the demo's quiet seat)
     "door.sub": "Sign in or make your account",
-    "door.slowLine": "Still connecting. The doors are below; signing in finishes as soon as the connection answers.",
     "door.google": "Continue with Google",
     "door.apple": "Continue with Apple",
     "door.orEmail": "or with email",
@@ -478,7 +477,6 @@ export const STRINGS = {
 
     // ---- la puerta (página 1 + paso 2 + el rincón tranquilo de la demo)
     "door.sub": "Inicia sesión o crea tu cuenta",
-    "door.slowLine": "Aún conectando. Las puertas están abajo; el inicio de sesión termina en cuanto responda la conexión.",
     "door.google": "Continuar con Google",
     "door.apple": "Continuar con Apple",
     "door.orEmail": "o con tu correo",

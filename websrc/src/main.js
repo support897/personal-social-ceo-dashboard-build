@@ -2350,48 +2350,17 @@ try { window.__rueflySetLang = setLang; } catch {}
 // never the signed-out door. A returning user whose session is
 // still restoring used to see the full sign-in door for seconds
 // and believe they were signed out.
-// BOOT RESILIENCE (her phone finding, build 13, 19 Oct): the splash
-// is a BOUNDED wait now. The first auth answer normally lands in a
-// blink; if the SDK chain stalls on a real device (its persistence
-// layer inside WKWebView is the flaky step), the splash must not be
-// a life sentence — after the bound, the real door paints with the
-// honest still-connecting line, and the watcher (whenever it does
-// answer) routes from there exactly as it always has.
-const BOOT_FALLBACK_MS = 6000;
-let bootFallbackTimer = null;
-let bootSlowShown = false;
-function armBootFallback() {
-  clearTimeout(bootFallbackTimer);
-  bootFallbackTimer = setTimeout(() => {
-    if (fbUser === undefined && accountMode !== "user") {
-      // The line rides fbMsg: it is the door's own status line
-      // (renderLogin's message argument is not painted on step 1).
-      bootSlowShown = true;
-      fbMsg = t("door.slowLine");
-      renderLogin();
-    }
-  }, BOOT_FALLBACK_MS);
-}
-function clearBootFallback() { clearTimeout(bootFallbackTimer); bootFallbackTimer = null; }
-
-function renderBootSplash() {
-  applyDocLang();
-  armBootFallback();
-  $("#app").innerHTML = `
-  <main class="door-wrap">
-    <section class="door-page">
-      <div class="door-mark"><img src="/icons/mark.svg" alt="" /></div>
-      <h1 class="door-name">Ruefly</h1>
-      <p class="door-sub">${esc(t("account.oneMoment"))}</p>
-    </section>
-  </main>`;
-}
-
 async function boot() {
   // P3 slice 2: a signed-in Firebase user lives on the per-user base —
   // their data, under their uid, and nothing of the owner room's.
   if (accountMode === "user" && fbUser) { await enterUserMode(); return; }
-  if (FIREBASE_ON && fbUser === undefined) { renderBootSplash(); return; }
+  // PATTERN OF RECORD (Meal Prep line 1, her ruling 19 Oct): the
+  // door is the FIRST SCREEN — it renders at first paint, gated on
+  // no data read, auth callback or network call. The watcher's
+  // first answer then decides only whether the door STANDS
+  // (signed out) or is replaced (signed in). Nothing can hold the
+  // first screen, so the boot hang class has no site left.
+  if (FIREBASE_ON && fbUser === undefined) { renderLogin(); return; }
   if (LIVE && supabase && !session) {
     const saved = await supabase.auth.getSession();
     session = saved.data.session;
@@ -2474,19 +2443,16 @@ let fbMsg = "";
 if (FIREBASE_ON) {
   let fbKnown = false;
   watchFirebaseUser((u) => {
-    clearBootFallback();
-    // The answer landed: the still-connecting line has done its
-    // job and must not linger under a door that now knows.
-    if (bootSlowShown) { bootSlowShown = false; fbMsg = ""; }
     const firstKnown = !fbKnown;
     fbKnown = true;
     fbUser = u;
     // A sign-out tears any tour surface down with the session.
     if (!u) { tourActive = false; tourPending = false; reofferPending = false; closeTourOverlayEl(); }
     if (u) { enterUserMode(); return; }
-    // First answer "signed out": replace the boot splash with the
-    // real door (R-003) — later sign-outs take the paths below.
-    if (firstKnown && accountMode !== "user") { renderLogin(); return; }
+    // First answer "signed out": the door painted at boot STANDS
+    // (pattern line 1) — repaint only if something else holds the
+    // screen; later sign-outs take the paths below.
+    if (firstKnown && accountMode !== "user") { if (!document.querySelector(".door-page")) renderLogin(); return; }
     if (accountMode === "user") { exitUserMode(t("auth.signedOut")); return; }
     if (route().page === "account" && document.querySelector("#content")) renderContent(route());
   }).catch(() => {});
