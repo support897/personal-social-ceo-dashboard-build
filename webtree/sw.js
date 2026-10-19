@@ -48,9 +48,9 @@ self.addEventListener("push", (event) => {
   const jobs = [
     self.registration.showNotification(title, {
       body: data.body || "",
-      icon: "/icons/icon-192.png",
-      badge: "/icons/icon-192.png",
-      data: { url: data.url || "/app/" },
+      icon: "./icons/icon-192.png",
+      badge: "./icons/icon-192.png",
+      data: { url: data.url || "./app/" },
     }),
   ];
   if (data.nonce) {
@@ -71,7 +71,7 @@ self.addEventListener("push", (event) => {
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const url = event.notification.data?.url || "/app/";
+  const url = event.notification.data?.url || "./app/";
   event.waitUntil((async () => {
     const wins = await clients.matchAll({ type: "window", includeUncontrolled: true });
     for (const w of wins) { if ("focus" in w) { w.focus(); return; } }
