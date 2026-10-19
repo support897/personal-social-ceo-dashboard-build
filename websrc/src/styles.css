@@ -1,0 +1,468 @@
+/* RUEFLY — Golden-Hour Coral (board LOCKED 14 Oct 2026; this file's
+   PALETTE.md + ~/workspace/personal-brand/brand-board/ruefly/ govern):
+   Coral #FF5A48 (fills only, ink text) · Anchor #C93327 (buttons,
+   small text) · Cream #FFF4E8 ground · Ink #33161F (text; flat
+   sidebar wall) · Marigold #FFB43A sparks. Coral NEVER carries
+   text on cream. Type: Instrument Serif in display seats
+   (headlines, wordmark, empty-state lines) · Outfit everywhere
+   else. The burgundy system is retired in full. */
+:root {
+  --burgundy: #C93327; --wine-deep: #33161F; --claret: #A8261E; --dusty: #FF9A8A;
+  --baby: #FFC4B8; --pink-soft: #FFE3D6; --pink-pale: #FFF1E4;
+  --ground: #FFF4E8; --ink: #33161F; --ink-soft: #755144;
+  --line: rgba(51, 22, 31, 0.14); --card: #FFFBF4; --radius: 18px;
+  --ease: 0.16s ease;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: "Outfit", system-ui, sans-serif; color: var(--ink);
+  /* Apple-look FIRST 5, change 1 — kill the mist: flat ground, no
+     gradient blobs. Pink lives in the sidebar, the accent and the
+     dots, where it means something. */
+  background: var(--ground);
+  min-height: 100vh;
+}
+h1, h2, h3 { font-family: "Outfit", sans-serif; font-weight: 800; letter-spacing: 0; }
+a { color: inherit; }
+button { font: inherit; cursor: pointer; }
+::selection { background: var(--baby); }
+:focus-visible { outline: 2px solid var(--claret); outline-offset: 2px; border-radius: 6px; }
+
+/* ------------------------------------------------ login */
+.login-wrap { min-height: 100vh; display: grid; place-items: center; padding: 22px 16px; }
+.login-card {
+  width: min(430px, 100%); background: var(--card); border: 1px solid var(--line);
+  border-radius: 26px; padding: 30px 26px 24px; box-shadow: 0 18px 44px rgba(51, 22, 31, 0.12);
+}
+.login-mark { width: 62px; height: 62px; border-radius: 16px; }
+.login-title { font-size: 27px; margin: 14px 0 6px; color: var(--wine-deep); }
+.login-sub { color: var(--ink-soft); margin: 0 0 18px; line-height: 1.5; }
+.preview-note {
+  background: var(--pink-pale); border: 1px dashed rgba(51, 22, 31, 0.4);
+  border-radius: 14px; padding: 12px 14px; font-size: 14px; line-height: 1.5; margin-bottom: 14px;
+}
+.login-form { display: grid; gap: 8px; margin-bottom: 14px; }
+.login-form label { font-family: "Outfit", sans-serif; font-weight: 700; font-size: 13px; }
+.login-form input {
+  font: inherit; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line);
+  background: var(--ground); color: var(--ink); width: 100%;
+}
+.login-form input:focus { border-color: var(--claret); outline: none; box-shadow: 0 0 0 3px rgba(255, 196, 184, 0.55); }
+.login-form.alt { border-top: 1px solid var(--line); padding-top: 14px; }
+.form-note { font-size: 13px; color: var(--ink-soft); margin: 2px 0 0; min-height: 16px; }
+.login-foot { font-size: 13px; color: var(--ink-soft); display: flex; gap: 8px; align-items: center; margin: 6px 0 0; }
+.btn {
+  border: 0; border-radius: 999px; padding: 12px 20px; font-family: "Outfit", sans-serif;
+  font-weight: 700; background: var(--ink); color: var(--ground); text-decoration: none; display: inline-block;
+  transition: transform var(--ease), background var(--ease), box-shadow var(--ease);
+}
+.btn.primary { background: var(--burgundy); color: var(--ground); }
+.btn.primary:hover { background: var(--wine-deep); }
+/* Dogfood fix (ISSUE-009): the soft button carries a defined edge
+   and the deep wine text, so it reads as a live button — the pale
+   fill alone read as a disabled state next to the real ones. */
+.btn.soft { background: var(--pink-soft); color: var(--wine-deep); border: 1.5px solid rgba(201, 51, 39, 0.45); }
+.btn.soft:hover { background: var(--baby); }
+.btn:active { transform: scale(0.98); }
+.btn.full { width: 100%; text-align: center; }
+
+/* ------------------------------------------------ shell: sidebar ALWAYS beside content */
+.shell { display: flex; min-height: 100vh; align-items: stretch; }
+.sidebar {
+  width: 248px; flex: 0 0 auto; position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  background: var(--ink);
+  color: var(--ground);
+  border-right: 1px solid rgba(51, 22, 31, 0.35); padding: 16px 12px; display: flex; flex-direction: column; gap: 14px;
+  transition: width 0.18s ease, padding 0.18s ease;
+}
+.main-col { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
+.content { padding: 20px clamp(14px, 3.5vw, 34px) 60px; width: 100%; max-width: 880px; animation: page-in 0.18s ease; }
+@keyframes page-in { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+
+.side-brand { display: flex; gap: 10px; align-items: center; padding: 2px 6px 10px; border-bottom: 1px solid rgba(255, 196, 184, 0.28); }
+.side-brand img { width: 38px; height: 38px; border-radius: 10px; }
+.side-brand b { font-family: "Instrument Serif", sans-serif; font-size: 17px; display: block; line-height: 1; color: var(--ground); }
+.side-brand small { font-family: "Outfit", sans-serif; font-size: 10px; letter-spacing: 0.14em; color: var(--baby); }
+.side-nav { display: grid; gap: 2px; }
+.side-link {
+  display: flex; align-items: center; gap: 9px; padding: 9px 10px; border-radius: 12px;
+  text-decoration: none; font-family: "Outfit", sans-serif; font-weight: 700; font-size: 15px;
+  color: var(--ground); transition: background var(--ease), transform var(--ease);
+}
+.side-link:hover { background: rgba(255, 196, 184, 0.16); }
+.side-link:active { transform: scale(0.98); }
+.side-link.on { background: var(--baby); color: var(--ink); }
+.side-link.on .dot { box-shadow: 0 0 0 3px rgba(51, 22, 31, 0.18); }
+/* Apple-look FIRST 5, change 5 — icon tiles out: sidebar icons sit
+   bare, glyphs only, tinted by their accent colour on the wine wall. */
+.side-ico {
+  width: 20px; height: 20px; border-radius: 0; display: grid; place-items: center; flex: 0 0 auto;
+  background: none; color: var(--baby);
+}
+.side-ico .ic { width: 18px; height: 18px; }
+.ext-ico { display: grid; place-items: center; flex: 0 0 auto; }
+.ext-ico .ic { width: 15px; height: 15px; }
+.side-link.on .side-ico { background: none; color: var(--ink); }
+.side-ico.accent-rose { background: none; box-shadow: none; color: var(--baby); }
+.side-ico.accent-dusty { background: none; box-shadow: none; color: var(--dusty); }
+.side-ico.accent-peri { background: none; box-shadow: none; color: var(--pink-soft); }
+.side-ico.accent-powder { background: none; box-shadow: none; color: var(--pink-pale); }
+.side-ico.accent-mint { background: none; box-shadow: none; color: var(--baby); }
+.side-txt { white-space: nowrap; overflow: hidden; }
+.side-foot { margin-top: auto; border-top: 1px solid rgba(255, 196, 184, 0.28); padding-top: 12px; display: grid; gap: 2px; }
+.side-ext { display: flex; align-items: center; gap: 9px; padding: 7px 10px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 14px; background: none; border: 0; text-align: left; width: 100%; color: var(--pink-soft); transition: background var(--ease), color var(--ease); }
+.side-ext:hover { background: rgba(255, 196, 184, 0.16); color: var(--ground); }
+.side-ext:active { background: rgba(255, 196, 184, 0.28); }
+
+/* collapsed: sidebar fully hidden — zero sidebar pixels (Ilse's order,
+   11 Oct 2026: "If I collapse it I don't wanna see anything"). The content
+   column takes the full width; the topbar toggle in the header — always
+   visible — brings the sidebar back. Open state unchanged: the sidebar
+   stays beside the content, never stacked. */
+.shell.nav-closed .sidebar { display: none; }
+/* Her nav ruling (15 Oct 2026, the Muse-app shape): with the menu
+   OPEN on a phone, the menu takes most of the screen and the
+   content shrinks to a thin sliver at the edge. Tapping the
+   sliver (or the menu button) closes the menu and the full
+   content returns. Closed still means fully hidden, as ordered. */
+@media (max-width: 720px) {
+  .shell:not(.nav-closed) .sidebar { flex: 0 0 84vw; width: 84vw; max-width: 400px; }
+  .shell:not(.nav-closed) .main-col { flex: 1 1 0; min-width: 0; overflow: hidden; cursor: pointer; }
+  .shell:not(.nav-closed) .content { opacity: .45; pointer-events: none; }
+  .shell:not(.nav-closed) .add-fab { display: none; }
+}
+
+@media (max-width: 640px) {
+  .sidebar { width: 188px; }
+  .content { padding-top: 14px; }
+}
+
+.topbar {
+  position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 12px;
+  padding: 12px clamp(14px, 3.5vw, 34px); background: rgba(255, 247, 245, 0.88); backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+.menu-btn {
+  border: 1px solid var(--line); background: var(--card); border-radius: 10px; width: 38px; height: 38px;
+  display: grid; place-items: center; line-height: 1; color: var(--burgundy); transition: background var(--ease), transform var(--ease);
+}
+.menu-btn .ic { width: 19px; height: 19px; }
+.menu-btn:hover { background: var(--pink-pale); }
+.menu-btn:active { transform: scale(0.94); }
+.top-title b { font-family: "Outfit", sans-serif; font-size: 16px; display: block; line-height: 1.15; }
+.top-title small { color: var(--ink-soft); font-size: 12px; }
+.preview-pill, .live-pill {
+  margin-left: auto; font-family: "Outfit", sans-serif; font-weight: 700; font-size: 12px;
+  padding: 5px 11px; border-radius: 999px;
+}
+.preview-pill { background: var(--baby); color: var(--burgundy); }
+.live-pill { background: var(--pink-soft); color: var(--burgundy); }
+
+/* ------------------------------------------------ content pieces */
+.hero { margin: 6px 0 18px; }
+.hero h2 { font-size: 28px; margin: 0 0 6px; color: var(--wine-deep); }
+.hero p { color: var(--ink-soft); line-height: 1.55; margin: 0; max-width: 62ch; }
+
+.strip { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); margin-bottom: 18px; }
+/* the product's own brand rows (user + demo home strip): plain
+   rows in the strip, hairline between — the room's card
+   rules live in ./room.css and never ship here. */
+.brand-card { border-top: 1px solid var(--line); padding: 13px 2px 12px; }
+.strip .brand-card:first-child { border-top: 0; }
+.brand-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.brand-head h3 { margin: 0; font-size: 16.5px; }
+.brand-short { font-family: "Outfit", sans-serif; font-weight: 700; font-size: 13px; color: var(--ink-soft); margin: 2px 0 0; }
+
+.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex: 0 0 auto; background: #c9b3b9; }
+.dot-live { background: #3d9970; box-shadow: 0 0 0 3px rgba(61, 153, 112, 0.18); }
+.dot-part { background: var(--claret); box-shadow: 0 0 0 3px rgba(168, 38, 30, 0.18); }
+.dot-wait { background: var(--dusty); box-shadow: 0 0 0 3px rgba(255, 154, 138, 0.22); }
+
+/* Apple-look FIRST 5, change 2 — un-card the lists: a panel is now a
+   plain block (headline + hairline rows), no border, radius or shadow. */
+.panel {
+  background: transparent; border: 0; border-radius: 0; box-shadow: none;
+  padding: 6px 0 14px; margin-bottom: 26px;
+}
+.panel-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; }
+.panel-head h3 { margin: 0; font-size: 17px; }
+.panel p { line-height: 1.55; margin: 6px 0; }
+.pill {
+  font-family: "Outfit", sans-serif; font-weight: 700; font-size: 12px; background: var(--pink-soft);
+  color: var(--burgundy); padding: 4px 10px; border-radius: 999px; display: inline-flex; gap: 7px; align-items: center; white-space: nowrap;
+}
+/* Apple-look FIRST 5: the panel gradient washes (supervisor/socials)
+   and the 6px left accent bars (rename + accent-left-*) are gone —
+   mist and accent-bar tells. Panel identity rides on its headline. */
+
+.latest-line { font-weight: 800; font-size: 16px; }
+.detail { color: var(--ink-soft); }
+
+.case-state { font-family: "Outfit", sans-serif; font-weight: 700; font-size: 12px; background: var(--pink-soft); color: var(--burgundy); padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+
+/* socials rows (home front section + worker overview) */
+.social-row { position: relative; }
+.social-row::before { content: ""; position: absolute; top: 0; left: 16px; right: 0; height: 1px; background: var(--line); }
+.social-row:first-of-type::before { display: none; }
+.social-head { display: flex; align-items: center; gap: 10px; padding: 10px 6px 2px; }
+.social-head b { font-size: 15px; }
+.social-state { margin-left: auto; }
+.social-line { padding: 0 6px; margin: 2px 0 4px; line-height: 1.5; }
+.social-detail { padding: 0 6px 8px; color: var(--ink-soft); line-height: 1.5; margin: 0; }
+.empty { color: var(--ink-soft); font-style: italic; }
+
+.section-label { margin: 20px 2px 10px; }
+.section-label h3 { font-size: 17px; }
+
+/* ------------------------------------------------ notifications page */
+.ic { width: 15px; height: 15px; flex: 0 0 auto; }
+.notif-actions { display: flex; gap: 9px; flex-wrap: wrap; margin-top: 11px; }
+.notif-actions .btn { padding: 10px 18px; font-size: 14px; }
+.notif-ios {
+  background: var(--pink-pale); border-radius: 12px; padding: 10px 13px;
+  font-weight: 700; color: var(--wine-deep);
+}
+.notif-status { font-size: 15.5px; font-weight: 700; }
+
+/* ==== APPLE FULL PASS, second half (round 11, her order 12 Oct 21:20:
+   every remaining tell out, judged against the iPhone's own apps) ====
+   Tell 6: worker strip grid -> plain rows, hairline between, dim press. */
+.strip { display: block; margin-bottom: 10px; }
+/* Tell 4: no soft shadow furniture on the login card. */
+.login-box, .login-card { box-shadow: none !important; }
+/* Tell 10: the login note's dashed decoration becomes solid. */
+.preview-note { border-style: solid; border-color: var(--line); }
+/* Tell 13: empty states upright. */
+.empty { font-style: normal; }
+/* Tell 12: the every-page fade is gone. */
+.content { animation: none; }
+
+/* Nav shape (house law, 14 Oct): grouped areas, one open at a time */
+.side-group-title { display: block; font-family: "Outfit", sans-serif; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--baby); margin: 14px 6px 6px; }
+.side-group-toggle { display: flex; align-items: center; gap: 6px; width: 100%; background: none; border: 0; cursor: pointer; font-family: "Outfit", sans-serif; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--baby); margin: 14px 6px 6px; padding: 0; text-align: left; }
+.more-group { display: none; }
+.more-group.open { display: block; }
+.shell.nav-closed .side-group-title, .shell.nav-closed .side-group-toggle { display: none; }
+
+/* RUEFLY rebrand (14 Oct 2026): vendored faces; serif in display seats only. */
+@font-face{font-family:"Instrument Serif";src:url("/fonts/InstrumentSerif-Regular.ttf") format("truetype");font-weight:400}
+@font-face{font-family:"Instrument Serif";src:url("/fonts/InstrumentSerif-Italic.ttf") format("truetype");font-weight:400;font-style:italic}
+@font-face{font-family:"Outfit";src:url("/fonts/Outfit.ttf") format("truetype");font-weight:100 900}
+.login-title,.side-brand,.brand-name,.wordmark,h1,h2,.empty,.empty-title,.empty-line{font-family:"Instrument Serif",serif;font-weight:400;letter-spacing:.3px}
+
+/* Accounts phase P3 (slice 2): login doors, demo label, guide card,
+   Law E background row. Kept quiet — the calm law covers these too. */
+.login-divider { display: flex; align-items: center; gap: 10px; margin: 18px 0 12px; color: var(--ink-soft); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.login-divider::before, .login-divider::after { content: ""; flex: 1; border-top: 1px solid var(--line); }
+#fbGoogleLogin, #fbAppleLogin { margin-top: 8px; }
+.demo-banner { margin: 10px 14px 0; padding: 8px 12px; border-radius: 10px; background: var(--pink-soft); color: var(--ink); font-size: 13px; font-weight: 600; }
+.guide-card { display: flex; gap: 12px; align-items: flex-start; }
+.guide-mark { width: 34px; height: 34px; flex: none; }
+.guide-body { flex: 1; }
+.guide-bubble { margin: 0; font-size: 15px; font-weight: 700; color: var(--ink); }
+.guide-note { margin: 4px 0 0; font-size: 13px; color: var(--ink-soft); }
+.guide-actions { display: flex; flex-direction: column; gap: 6px; }
+.bg-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 6px 0; }
+.start-actions { margin-top: 14px; }
+
+/* Upgrade moment (her order, 15 Oct 21:39): the popup that answers
+   a paid-edge tap, and nothing else. It opens only on that tap —
+   never on load, never on a timer. The card is the login card's
+   family (card ground, hairline, radius); the two buttons carry
+   EQUAL weight — same size, side by side, neither a bare link. */
+.upgrade-overlay {
+  position: fixed; inset: 0; z-index: 60;
+  background: rgba(51, 22, 31, 0.45);
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: 18px; overflow-y: auto;
+}
+.upgrade-card {
+  width: min(400px, 100%); background: var(--card); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 22px 20px 16px; text-align: center;
+  box-shadow: 0 18px 50px rgba(51, 22, 31, 0.28);
+  /* Dogfood fix (ISSUE-002): a card taller than the viewport scrolls
+     inside itself, so its title and its action row are never sliced
+     by the screen edge. The overlay scrolls too, as a second belt. */
+  max-height: calc(100dvh - 36px); overflow-y: auto; margin: auto 0;
+}
+.upgrade-mark { width: 64px; height: 64px; }
+.upgrade-title { margin: 10px 0 8px; font-size: 19px; color: var(--wine-deep); }
+.upgrade-line { margin: 0 0 10px; line-height: 1.55; color: var(--ink); }
+.upgrade-price { margin: 0 0 16px; font-weight: 800; font-size: 16px; color: var(--burgundy); }
+.upgrade-actions { display: flex; gap: 10px; }
+.upgrade-actions .btn { flex: 1; padding: 12px 10px; font-size: 15px; }
+.upgrade-foot { margin: 12px 0 4px; font-size: 13px; color: var(--ink-soft); }
+
+/* ------------------------------------------------ door v4
+   (her approval, 15 Oct 22:26): page 1 holds ONLY the sign-up,
+   big and centred on the cream ground — no card, no extra words.
+   The mark tile is pink-soft (coral-family fills carry no text);
+   the round next arrow and the step-2 button are Anchor, the
+   board's button colour. The demo line sits at the very bottom,
+   quiet; its box opens only on a tap. */
+.door-wrap { min-height: 100vh; display: flex; flex-direction: column; padding: 26px 22px 20px; }
+.door-page { text-align: center; width: 100%; max-width: 340px; margin: 4vh auto 0; }
+/* Dogfood fix (ISSUE-011): the mark stands at full size — the
+   mark's own tile is the tile (the old double tile shrank the kite
+   inside two frames of padding). */
+.door-mark {
+  width: 96px; height: 96px; border-radius: 22px;
+  display: flex; align-items: center; justify-content: center; margin: 0 auto;
+}
+.door-mark img { width: 96px; height: 96px; }
+.door-name { font-family: "Instrument Serif", serif; font-weight: 400; font-size: 34px; margin: 14px 0 0; color: var(--wine-deep); }
+.door-sub { color: var(--ink-soft); font-size: 15px; margin: 5px 0 0; }
+.door-page .preview-note { margin-top: 18px; text-align: left; }
+.door-icons { display: flex; gap: 12px; margin: 26px auto 0; }
+.door-ibtn {
+  flex: 1; height: 62px; border-radius: 16px; background: var(--card);
+  border: 1px solid var(--line); display: flex; align-items: center; justify-content: center;
+  transition: transform var(--ease), background var(--ease);
+}
+.door-ibtn:hover { background: var(--pink-pale); }
+.door-ibtn:active { transform: scale(0.98); }
+.door-or { display: flex; align-items: center; gap: 12px; margin: 20px auto 14px; color: var(--ink-soft); font-size: 12.5px; }
+.door-or::before, .door-or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.door-form { display: grid; gap: 8px; text-align: left; }
+.door-form label { font-family: "Outfit", sans-serif; font-weight: 700; font-size: 13px; }
+.door-form input {
+  font: inherit; font-size: 15.5px; height: 57px; padding: 0 15px; border-radius: 15px;
+  border: 1px solid var(--line); background: var(--card); color: var(--ink); width: 100%;
+}
+.door-form input:focus { border-color: var(--claret); outline: none; box-shadow: 0 0 0 3px rgba(255, 196, 184, 0.55); }
+/* Dogfood fix (ISSUE-010): the Next button says its name — a pill
+   with the word and the arrow, never a bare arrow in a circle. */
+.door-next {
+  height: 56px; border-radius: 999px; border: 0; background: var(--burgundy);
+  color: var(--ground); font-family: "Outfit", sans-serif; font-weight: 700; font-size: 16px;
+  display: flex; align-items: center; justify-content: center; gap: 8px; margin: 10px auto 0;
+  padding: 0 28px;
+  transition: transform var(--ease), background var(--ease);
+}
+.door-next svg { width: 20px; height: 20px; }
+.door-next:hover { background: var(--wine-deep); }
+.door-next:active { transform: scale(0.96); }
+.door-form .form-note { text-align: center; }
+.door-email-row { font-size: 16px; margin: 16px 0 14px; color: var(--ink); }
+.door-change {
+  background: none; border: 0; color: var(--burgundy); font-weight: 700; font-size: 14px;
+  text-decoration: underline; padding: 2px 4px;
+}
+.door-forgot {
+  background: none; border: 0; color: var(--ink-soft); font-size: 13.5px; font-weight: 600;
+  padding: 6px; text-decoration: underline;
+  /* Dogfood fix (ISSUE-012): text links get a full-size tap target. */
+  min-height: 44px; display: inline-flex; align-items: center;
+}
+.door-demo { margin-top: auto; text-align: center; padding-top: 26px; }
+/* Looks fix (QA b11 note): the demo line is a flex row, and flex
+   layout trims the string's space before the bold span — the door
+   read "Just looking?Open…". The separation is structural now. */
+.door-demo-line { background: none; border: 0; color: var(--ink-soft); font-size: 12.5px; padding: 6px; min-height: 44px; display: inline-flex; align-items: center; column-gap: 4px; }
+/* Dogfood fix (ISSUE-013): inside the demo box the code form's top
+   rule read as a stray line under the note; the box is one group. */
+.door-demo-box .login-form.alt { border-top: 0; padding-top: 8px; }
+.door-demo-line b { color: var(--ink); opacity: 0.75; }
+.door-demo-box { max-width: 340px; margin: 10px auto 0; text-align: left; }
+
+/* The deletion landing line (F1): a calm, steady block on the
+   door — not a toast. It holds until the visitor next interacts. */
+.door-notice {
+  margin: 16px auto 0; max-width: 340px; text-align: center;
+  font-weight: 600; line-height: 1.5; color: var(--ink);
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 12px; padding: 11px 14px;
+}
+
+/* ------------------------------------------------ the tour
+   (door v4): ONE pop-up in the middle of the screen over the
+   real app — Rue in a white-ringed circle at the card's top,
+   her bubble line, the ✕, the dots, Next / Done. The re-offer
+   card is the same family, smaller and quieter. */
+.tour-overlay {
+  position: fixed; inset: 0; z-index: 70;
+  background: rgba(51, 22, 31, 0.32);
+  display: flex; align-items: center; justify-content: center;
+  padding: 18px;
+}
+.tour-card {
+  position: relative; width: min(330px, 100%); background: #FFFFFF;
+  border-radius: 20px; padding: 16px 16px 14px; text-align: center;
+  box-shadow: 0 16px 40px rgba(51, 22, 31, 0.30);
+}
+.tour-mascot {
+  width: 62px; height: 62px; border-radius: 50%; background: var(--ground);
+  display: flex; align-items: center; justify-content: center;
+  margin: -38px auto 6px; border: 3px solid #FFFFFF; overflow: hidden;
+  box-shadow: 0 6px 14px rgba(51, 22, 31, 0.18);
+}
+.tour-mascot img { width: 58px; height: 58px; object-fit: cover; }
+.tour-x {
+  position: absolute; top: 9px; right: 12px; background: none; border: 0;
+  color: #B4A68C; font-size: 15px; font-weight: 700; padding: 4px;
+}
+.tour-line { font-size: 15.5px; font-weight: 700; color: var(--ink); line-height: 1.4; margin: 4px 0 0; }
+.tour-field {
+  width: 100%; height: 42px; border-radius: 11px; border: 1.5px solid var(--burgundy);
+  padding: 0 12px; font: inherit; font-size: 14.5px; color: var(--ink);
+  background: #FFFFFF; margin-top: 11px;
+}
+.tour-field:focus { outline: none; box-shadow: 0 0 0 3px rgba(255, 196, 184, 0.55); }
+.tour-row { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; }
+.tour-skip { background: none; border: 0; font-size: 13.5px; color: var(--ink-soft); padding: 6px 2px; }
+.tour-next { height: 42px; padding: 0 20px; font-size: 14.5px; }
+.tour-dots { font-size: 11px; color: #B4A68C; margin-top: 9px; letter-spacing: 3px; }
+.reoffer-card { width: min(300px, 100%); }
+
+/* The home greeting + the Account name row (door v4). */
+.greet-line { font-size: 16.5px; font-weight: 600; color: var(--ink-soft); margin: 0 0 2px; }
+.greet-line b { color: var(--ink); }
+.name-row { display: flex; gap: 8px; align-items: center; margin: 6px 0; }
+.name-row input {
+  flex: 1; font: inherit; padding: 11px 13px; border-radius: 12px;
+  border: 1px solid var(--line); background: var(--card); color: var(--ink);
+}
+.name-row input:focus { border-color: var(--claret); outline: none; box-shadow: 0 0 0 3px rgba(255, 196, 184, 0.55); }
+
+/* Plans page: the shelf as plain cards (the panel family, with the
+   card ground restored so a plan reads as one thing). */
+.plan-card {
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 14px 16px; margin-bottom: 18px;
+}
+.plan-point { margin: 4px 0; }
+
+/* Law E background choices (slice 2): "brand" is the board look and
+   needs no override. White rests the ground on plain white; black
+   rests it on the ink wall with the board's cream as the ink. The
+   upload choice paints the user's own photo on a fixed layer
+   behind the app, under a soft cream veil: at 0.78 the cream over
+   even a pure-black photo area still holds the ink text past the
+   AA floor, and the app's own cards paint above it as always. */
+html[data-bg="white"] { --ground: #FFFFFF; --card: #FFFFFF; --pink-pale: #FFF7EF; }
+html[data-bg="black"] { --ground: #33161F; --card: #41222B; --ink: #FFF4E8; --ink-soft: #E3C4B6; --line: rgba(255, 244, 232, 0.2); --pink-soft: #5A2E35; --baby: #7A4048; }
+html[data-bg="black"] .sidebar { border-right-color: rgba(255, 244, 232, 0.2); }
+html[data-bg="upload"] { --ground: #FFF4E8; }
+#bgPhotoLayer { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
+#bgPhotoLayer .bg-photo { position: absolute; inset: 0; background-size: cover; background-position: center; }
+#bgPhotoLayer .bg-veil { position: absolute; inset: 0; background: rgba(255, 244, 232, 0.78); }
+/* Build 3 (connection layer): the per-connection controls under
+   each account row, the connect sheet's per-platform rows, and
+   the AI writing help's prompt + draft list. All in the panel
+   family the app already uses; nothing new invented. */
+.conn-actions { display: flex; gap: 8px; padding: 2px 6px 10px; }
+/* The connect sheet is taller than the popup family it rides:
+   five platform rows cannot fit a small phone at once, so the
+   card scrolls inside itself (the shared overlay never did). */
+.conn-card { max-height: calc(100vh - 36px); overflow-y: auto; }
+.conn-sheet-row { border-top: 1px solid var(--line); padding: 10px 0 4px; }
+.conn-sheet-row:first-of-type { border-top: none; }
+.conn-sheet-head { padding: 0 6px; }
+.ai-prompt {
+  width: 100%; font: inherit; padding: 11px 13px; border-radius: 12px;
+  border: 1px solid var(--line); background: var(--card); color: var(--ink);
+  margin: 6px 0 10px; resize: vertical;
+}
+.ai-prompt:focus { border-color: var(--claret); outline: none; box-shadow: 0 0 0 3px rgba(255, 196, 184, 0.55); }
+.ai-draft { border-top: 1px solid var(--line); padding: 8px 0; }
