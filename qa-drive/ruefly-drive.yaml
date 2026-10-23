@@ -1,5 +1,5 @@
 # Ruefly 20 simulator drive — QA Tester chair.
-# Version: v10 (2026-10-24) — v9's IDENTITY CURE LANDED on
+# Version: v21 (2026-10-24) — v9's IDENTITY CURE LANDED on
 # drive 9 (run 39969500909): the entry landed straight on
 # the named home ("Hello," + "Sim Driver RF" standing as
 # their own nodes, the address its own node beside "Signed
@@ -374,9 +374,24 @@ appId: shop.ilseplacencia.socials
 # retry included) hit the tutorial card. Cure: dismiss the
 # tutorial first, conditionally, by its own text — it stands
 # only while a field holds first-use focus.
+# DRIVE 20 (run 40013170934) died at the fold20 bonus
+# judge, step-057 — and its failure hierarchy convicts
+# THIS segment, three steps earlier: the dialog node in
+# the tree reads "Your planned post, web dialog", so the
+# old key "Plan a post, web dialog" matched NOTHING: the
+# close runFlow never fired, its fatal notVisible judge
+# passed vacuously, and the "Your planned post" judge
+# below read the DIALOG's own heading (the ghost read).
+# The whole sign-out segment then ran against the modal
+# sheet. Cure (v21): the close keys on "Cancel" — a node
+# that stands ONLY inside the dialog (bounds
+# [39,792][198,838] in the death hierarchy) — a second
+# attempt keys on the dialog's true tree name, and the
+# fatal judge reads notVisible "Cancel": present iff
+# the dialog stands, so it can never pass vacuously.
 - runFlow:
     when:
-      visible: "Plan a post, web dialog"
+      visible: "Cancel"
     commands:
       - runFlow:
           when:
@@ -390,9 +405,16 @@ appId: shop.ilseplacencia.socials
           text: "Cancel"
           waitUntilVisible: true
           retryTapIfNoChange: true
+- runFlow:
+    when:
+      visible: "Your planned post, web dialog"
+    commands:
+      - tapOn:
+          text: "Cancel"
+          waitUntilVisible: true
 - extendedWaitUntil:
     notVisible:
-      text: "Plan a post, web dialog"
+      text: "Cancel"
     timeout: 30000
 # THE DURABLE SAVE PROOF: the queue card standing on the planner
 # itself. Drive 13's own hierarchy reads the card's node as "Your
