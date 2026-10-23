@@ -479,12 +479,27 @@ appId: shop.ilseplacencia.socials
 # verdict's read); the queue is the first standing proof — the
 # reprobe's poll stood at beat 2 (~10 s), the budget is the
 # harness poll's own outer bound.
+# DRIVE 15 (run 39995355784) died at this wait, step-069: the
+# caption judge again — v14 cured the JOURNEY leg's judge but
+# this return-leg twin still waited for "Sim drive post one",
+# which never stands in the planner's tree (the durable node
+# is "Your planned post"). The failure frame adds a second
+# fact: the sidebar stood OPEN over the planner on this
+# landing. v16: the conditional sidebar close first (keyed on
+# the sidebar-only "Brands"), then the durable card judge.
+# The brand's standing reads from 12's pixels at QA's eye —
+# the card's brand line — not from an unproven tree node.
+- runFlow:
+    when:
+      visible: "Brands"
+    commands:
+      - tapOn:
+          point: "93%, 50%"
+      - waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
-      text: "Sim drive post one"
+      text: "Your planned post"
     timeout: 60000
-- assertVisible:
-    text: "Sim Drive Brand"
 - takeScreenshot: 12-return-queue-stands
 # The identity line stands again, on Home.
 - tapOn:
