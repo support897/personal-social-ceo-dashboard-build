@@ -1,4 +1,14 @@
 # Ruefly 20 simulator drive — QA Tester chair.
+# Version: v10 (2026-10-24) — v9's IDENTITY CURE LANDED on
+# drive 9 (run 39969500909): the entry landed straight on
+# the named home ("Hello," + "Sim Driver RF" standing as
+# their own nodes, the address its own node beside "Signed
+# in as") and 05-identity-line stands. Death at step-027,
+# the journey's first sidebar tap — THE STANDING WATCH
+# FIRED: DOM-ID ≠ MAESTRO ID, FOURTH door. The step-027
+# hierarchy names the toggle "Collapse or open the sidebar"
+# [14,74][53,113]; the DOM id "menuBtn" matches nothing.
+# v10 re-addresses all five toggle taps to the tree name.
 # Version: v9 (2026-10-24) — v8 LANDED on drive 8 (run
 # 39965905595) and CHANGED THE WORLD it described: the sheet
 # was met by its own title, "Sim Driver RF" was typed and
@@ -238,7 +248,7 @@ appId: shop.ilseplacencia.socials
 - takeScreenshot: 05-identity-line
 # ---------- stage (ii): the journey — the planner ------------------
 - tapOn:
-    id: "menuBtn"
+    text: "Collapse or open the sidebar"
 - tapOn:
     text: "Planner"
     waitUntilVisible: true
@@ -290,7 +300,7 @@ appId: shop.ilseplacencia.socials
 # The shell's own road (fold20 leg-a's shellSignOut): the menu,
 # then "Sign out".
 - tapOn:
-    id: "menuBtn"
+    text: "Collapse or open the sidebar"
 - tapOn:
     text: "Sign out"
     waitUntilVisible: true
@@ -379,7 +389,7 @@ appId: shop.ilseplacencia.socials
 - takeScreenshot: 12-return-queue-stands
 # The identity line stands again, on Home.
 - tapOn:
-    id: "menuBtn"
+    text: "Collapse or open the sidebar"
 - tapOn:
     text: "Your Socials"
     waitUntilVisible: true
@@ -390,7 +400,7 @@ appId: shop.ilseplacencia.socials
 - takeScreenshot: 13-return-identity
 # ---------- sign out again (standing on Home; no bonus here) -------
 - tapOn:
-    id: "menuBtn"
+    text: "Collapse or open the sidebar"
 - tapOn:
     text: "Sign out"
     waitUntilVisible: true
@@ -465,7 +475,7 @@ appId: shop.ilseplacencia.socials
 # Isolation, planner side: this account's queue stands at the
 # shipped empty state; the first account's post never renders.
 - tapOn:
-    id: "menuBtn"
+    text: "Collapse or open the sidebar"
 - tapOn:
     text: "Planner"
     waitUntilVisible: true
