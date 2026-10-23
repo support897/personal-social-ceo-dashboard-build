@@ -539,6 +539,46 @@ appId: shop.ilseplacencia.socials
     text: "Continue with email"
     waitUntilVisible: true
     retryTapIfNoChange: true
+# v24 (drive 23, run 40028221949): the COLD-CHANNEL LOAD
+# FAILURE struck the SECOND account's door — the failure frame
+# stands on B's password step, the line spoken, the field
+# cleared, and this leg carried NO recovery: the tour wait ate
+# the window. The A leg's proven staggered pair (drive 12's
+# cure) now stands on the return and B legs too.
+- runFlow:
+    when:
+      visible: "Your account could not load. Try again."
+    commands:
+      - tapOn:
+          text: "Your password"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
+      - inputText: "${TEST_PASSWORD}"
+      - tapOn:
+          point: "90%, 62%"
+      - tapOn:
+          text: "Continue with email"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible: "Your account could not load. Try again."
+    commands:
+      - tapOn:
+          text: "Your password"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
+      - inputText: "${TEST_PASSWORD}"
+      - tapOn:
+          point: "90%, 62%"
+      - tapOn:
+          text: "Continue with email"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
 # A returning name sheet, if one stands on this entry, is
 # handled exactly as at leg (i) before the planner proof.
 - runFlow:
@@ -697,6 +737,42 @@ appId: shop.ilseplacencia.socials
     text: "Continue with email"
     waitUntilVisible: true
     retryTapIfNoChange: true
+# v24: the A leg's staggered load-line pair, B's password (the
+# drive 23 cure — see the return leg's note).
+- runFlow:
+    when:
+      visible: "Your account could not load. Try again."
+    commands:
+      - tapOn:
+          text: "Your password"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
+      - inputText: "${TEST_PASSWORD2}"
+      - tapOn:
+          point: "90%, 62%"
+      - tapOn:
+          text: "Continue with email"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible: "Your account could not load. Try again."
+    commands:
+      - tapOn:
+          text: "Your password"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
+      - inputText: "${TEST_PASSWORD2}"
+      - tapOn:
+          point: "90%, 62%"
+      - tapOn:
+          text: "Continue with email"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
 # The fresh account's tour stands on its first entry too, and
 # occludes the tree the same way: name ask first, the keyboard
 # dropped, the skip, then the identity on the re-exposed home.
