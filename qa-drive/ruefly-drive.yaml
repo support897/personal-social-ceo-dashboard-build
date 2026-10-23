@@ -1,4 +1,12 @@
 # Ruefly 20 simulator drive — QA Tester chair.
+# Version: v5 (2026-10-23) — the FULL-NODE MATCHING completion
+# (class proven on Fit drive 4 the same hour): the entry-proof
+# selectors carry Rue's complete heading "Hi! I'm Rue.
+# Welcome in! What's your name?" (sourced from drive 4's own
+# failure hierarchy) at all four sites. v4's reorder stands.
+# Drive 5 runs the pre-completion v4 and is expected to die at
+# this very wait with its hierarchy attached — the class's
+# second-door confirmation. v4: 14,124 B.
 # Version: v4 (2026-10-23) — v3 FAILED-INSTRUMENT at drive 4 (run
 # 39951208055, step-017) ON THE LANE'S FIRST FULL ENTRY: the
 # tree-wait cure landed, the submit fired, the account was
@@ -110,7 +118,7 @@ appId: shop.ilseplacencia.socials
 # the home's proofs run after the skip re-exposes them.
 - extendedWaitUntil:
     visible:
-      text: "What's your name?"
+      text: "Hi! I'm Rue. Welcome in! What's your name?"
     timeout: 90000
 - takeScreenshot: 03-inside-tour
 # The name field auto-focuses with the keyboard up and the bar
@@ -124,7 +132,7 @@ appId: shop.ilseplacencia.socials
     retryTapIfNoChange: true
 - extendedWaitUntil:
     notVisible:
-      text: "What's your name?"
+      text: "Hi! I'm Rue. Welcome in! What's your name?"
     timeout: 30000
 - takeScreenshot: 04-tour-skipped
 # ---------- the identity line (F-RF17-1's cure surface) -------------
@@ -310,7 +318,7 @@ appId: shop.ilseplacencia.socials
 # dropped, the skip, then the identity on the re-exposed home.
 - extendedWaitUntil:
     visible:
-      text: "What's your name?"
+      text: "Hi! I'm Rue. Welcome in! What's your name?"
     timeout: 90000
 - tapOn:
     point: "90%, 59%"
@@ -320,7 +328,7 @@ appId: shop.ilseplacencia.socials
     retryTapIfNoChange: true
 - extendedWaitUntil:
     notVisible:
-      text: "What's your name?"
+      text: "Hi! I'm Rue. Welcome in! What's your name?"
     timeout: 30000
 - extendedWaitUntil:
     visible:
