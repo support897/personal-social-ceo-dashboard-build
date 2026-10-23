@@ -1,4 +1,14 @@
 # Ruefly 20 simulator drive — QA Tester chair.
+# Version: v8 (2026-10-23) — v7's REFRESH CURE LANDED at the
+# Continue guard on drive 7 (run 39961347652): the submit
+# fired, the account signed in, and the name SHEET stood over
+# the Socials room in the failure frame. Death at step-019,
+# the entry settle: "Your account" stands in NO tree on this
+# landing (the room carries no such pill, and the standing
+# sheet occludes the home's texts regardless). v8 judges the
+# entry by the sheet itself, behind a transition refresh; the
+# header of that block carries the named forward note for the
+# day the name stands saved.
 # Version: v7 (2026-10-23) — v6 died at drive 6 (run
 # 39957795498, step-015) at leg (i)'s tree guard, in tree
 # lag's extreme form: the failure hierarchy holds SEVEN texts
@@ -149,10 +159,24 @@ appId: shop.ilseplacencia.socials
 # shapes), then handle whichever shape stands: the sheet gets
 # the spine's sentinel name, SAVED; the card is skipped by its
 # own control. The home's proofs run after.
+# Drive 7 (run 39961347652) killed the "Your account" settle:
+# the sign-in landed on the Socials ROOM, whose tree carries no
+# such pill, and while the name sheet stands the tree holds the
+# SHEET ALONE anyway (modal occlusion — the home's pixels are
+# not tree texts). The sheet is this leg's expected shape on
+# every A-entry so far (drives 5 and 7), so the judge now waits
+# for the sheet itself, behind a transition refresh. Named
+# forward note: the day a drive SAVES A's name, this entry
+# lands straight on the home and this judge must move to the
+# home's marker — that drive's frame will say so plainly.
+- waitForAnimationToEnd
+- swipe:
+    direction: UP
+- waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
-      text: "Your account"
-    timeout: 90000
+      text: "What's your name?"
+    timeout: 60000
 - runFlow:
     when:
       visible: "What's your name?"
