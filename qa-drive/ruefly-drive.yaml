@@ -1,4 +1,23 @@
 # Ruefly 20 simulator drive — QA Tester chair.
+# Version: v4 (2026-10-23) — v3 FAILED-INSTRUMENT at drive 4 (run
+# 39951208055, step-017) ON THE LANE'S FIRST FULL ENTRY: the
+# tree-wait cure landed, the submit fired, the account was
+# CREATED (REST-proven at QA's chair: uid vfkFI5Ao…, signs in
+# with the cast password), and the failure frame shows the app
+# INSIDE — "Hello, friend", the identity line in the one-load
+# paint, the tour standing. The assert died because of ORDER:
+# it asked the tree for the home's title while the tour sheet
+# stood modal, and the sim's tree under a modal holds the
+# SHEET ALONE (the hierarchy names the tour heading and
+# nothing behind it — MODAL TREE OCCLUSION, banked). v4
+# reorders both fresh-account entries: the name ask is the
+# entry proof, the keyboard drops by the measured tick, the
+# tour skips by its own control, and only then do the home
+# proofs run on the re-exposed tree. The re-login leg keeps
+# its order (that account's tour is done; no sheet stands).
+# Drive 5 note: account A exists with its tour UNFINISHED, so
+# leg (i) is a sign-in whose tour stands again — this shape
+# handles it; account B is fresh. v3: 12,597 B.
 # Version: v3 (2026-10-23) — v2 FAILED-INSTRUMENT at drive 3 (run
 # 39948369030, step-015 tapOn "Continue with email"): the door's
 # steps both PROVED (01: the tester's address typed on step 1;
@@ -83,34 +102,42 @@ appId: shop.ilseplacencia.socials
     text: "Continue with email"
     waitUntilVisible: true
     retryTapIfNoChange: true
-# Inside proof: the signed-in shell's topbar title stands (the
-# harness oracle: "Your Socials" present, the door gone).
+# Inside proof: on a FRESH account the first inside surface is
+# the TOUR sheet, and while it stands the sim's tree shows the
+# sheet ALONE (modal tree occlusion — drive 4's hierarchy held
+# the tour heading and nothing of the home behind it, though
+# the pixels showed both). Entry is proven on the name ask;
+# the home's proofs run after the skip re-exposes them.
 - extendedWaitUntil:
     visible:
-      text: "Your Socials"
+      text: "What's your name?"
     timeout: 90000
-- takeScreenshot: 03-inside-home-onload
-# ---------- the identity line (F-RF17-1's cure surface) -------------
-# Home's ONE-LOAD paint names the signed-in account: the b18
-# identity leg's criterion, asserted here in the same paint (the
-# tour overlay stands in this paint too — the line stands under
-# it, exactly as the leg read it).
-- assertVisible:
-    text: "Signed in as ${TEST_EMAIL}"
-- takeScreenshot: 04-identity-line
-# ---------- the first-entry tour: skipped by its own control --------
-# The tour stands over Home on a fresh account (its name step is
-# step 0, the only step carrying "Skip tour"). This spine's
-# identity marker is the email line above, not a tour name, so
-# the tour is skipped, never walked.
+- takeScreenshot: 03-inside-tour
+# The name field auto-focuses with the keyboard up and the bar
+# stands over the sheet's bottom row: drop it first (the
+# fleet's measured tick), then skip by the tour's own control.
+- tapOn:
+    point: "90%, 59%"
 - tapOn:
     text: "Skip tour"
     waitUntilVisible: true
+    retryTapIfNoChange: true
 - extendedWaitUntil:
     notVisible:
       text: "What's your name?"
     timeout: 30000
-- takeScreenshot: 05-tour-skipped
+- takeScreenshot: 04-tour-skipped
+# ---------- the identity line (F-RF17-1's cure surface) -------------
+# Home's ONE-LOAD paint names the signed-in account: the b18
+# identity leg's criterion, asserted here on the re-exposed
+# home (topbar title + the line, same paint).
+- extendedWaitUntil:
+    visible:
+      text: "Your Socials"
+    timeout: 60000
+- assertVisible:
+    text: "Signed in as ${TEST_EMAIL}"
+- takeScreenshot: 05-identity-line
 # ---------- stage (ii): the journey — the planner ------------------
 - tapOn:
     id: "menuBtn"
@@ -278,22 +305,29 @@ appId: shop.ilseplacencia.socials
     text: "Continue with email"
     waitUntilVisible: true
     retryTapIfNoChange: true
+# The fresh account's tour stands on its first entry too, and
+# occludes the tree the same way: name ask first, the keyboard
+# dropped, the skip, then the identity on the re-exposed home.
 - extendedWaitUntil:
     visible:
-      text: "Your Socials"
+      text: "What's your name?"
     timeout: 90000
-# The fresh account's tour stands on its first entry too; the
-# identity assertion comes first, in the same paint, then the
-# tour is skipped by the same control.
-- assertVisible:
-    text: "Signed in as ${TEST_EMAIL2}"
+- tapOn:
+    point: "90%, 59%"
 - tapOn:
     text: "Skip tour"
     waitUntilVisible: true
+    retryTapIfNoChange: true
 - extendedWaitUntil:
     notVisible:
       text: "What's your name?"
     timeout: 30000
+- extendedWaitUntil:
+    visible:
+      text: "Your Socials"
+    timeout: 60000
+- assertVisible:
+    text: "Signed in as ${TEST_EMAIL2}"
 - takeScreenshot: 15-second-account-in
 # Isolation, Home side: this space names its own account, and the
 # first account's identity and data never render here.
