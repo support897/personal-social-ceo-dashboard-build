@@ -1,4 +1,22 @@
 # Ruefly 20 simulator drive — QA Tester chair.
+# Version: v9 (2026-10-24) — v8 LANDED on drive 8 (run
+# 39965905595) and CHANGED THE WORLD it described: the sheet
+# was met by its own title, "Sim Driver RF" was typed and
+# SAVED BY THE MEASURED POINT, and frame 03 stands on the
+# home reading "Hello, Sim Driver RF". Two consequences,
+# both from that drive's own evidence. (1) THE FORWARD NOTE
+# FIRES: A's name now stands saved, so entries land straight
+# on the home — the fatal sheet judge is REMOVED; the two
+# conditional branches handle whichever shape stands and the
+# "Your Socials" wait judges the landing. (2) THE BOLD-PART
+# LAW: the failure hierarchy holds 'Hello,' and 'Signed in
+# as' — the name and the address are BOLD parts and never
+# enter this lane's tree at all (the pixels carry them; the
+# tree never will). Every identity assert now reads the
+# tree's own part, "Signed in as"; the address itself is
+# judged at REST from QA's chair, as on NeedsMe. The email
+# assertNotVisible in the isolation leg stays, harmless and
+# weightless — isolation rides the brand and post lines.
 # Version: v8 (2026-10-23) — v7's REFRESH CURE LANDED at the
 # Continue guard on drive 7 (run 39961347652): the submit
 # fired, the account signed in, and the name SHEET stood over
@@ -173,10 +191,6 @@ appId: shop.ilseplacencia.socials
 - swipe:
     direction: UP
 - waitForAnimationToEnd
-- extendedWaitUntil:
-    visible:
-      text: "What's your name?"
-    timeout: 60000
 - runFlow:
     when:
       visible: "What's your name?"
@@ -220,7 +234,7 @@ appId: shop.ilseplacencia.socials
       text: "Your Socials"
     timeout: 60000
 - assertVisible:
-    text: "Signed in as ${TEST_EMAIL}"
+    text: "Signed in as"
 - takeScreenshot: 05-identity-line
 # ---------- stage (ii): the journey — the planner ------------------
 - tapOn:
@@ -371,7 +385,7 @@ appId: shop.ilseplacencia.socials
     waitUntilVisible: true
 - extendedWaitUntil:
     visible:
-      text: "Signed in as ${TEST_EMAIL}"
+      text: "Signed in as"
     timeout: 60000
 - takeScreenshot: 13-return-identity
 # ---------- sign out again (standing on Home; no bonus here) -------
@@ -437,7 +451,7 @@ appId: shop.ilseplacencia.socials
       text: "Your Socials"
     timeout: 60000
 - assertVisible:
-    text: "Signed in as ${TEST_EMAIL2}"
+    text: "Signed in as"
 - takeScreenshot: 15-second-account-in
 # Isolation, Home side: this space names its own account, and the
 # first account's identity and data never render here.
