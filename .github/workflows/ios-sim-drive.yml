@@ -127,6 +127,7 @@ jobs:
           TEST_EMAIL2: "qa-ruefly-sim-b-51740296@example.com"
           TEST_PASSWORD2: ${{ secrets.QA_RUEFLY_TEST_PASSWORD2 }}
           MAESTRO_DRIVER_START_TIMEOUT: "180"
+          MAESTRO_DRIVER_STARTUP_TIMEOUT: "600000"
         run: |
           maestro test \
             -e TEST_EMAIL="$TEST_EMAIL" \
