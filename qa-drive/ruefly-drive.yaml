@@ -175,6 +175,49 @@ appId: shop.ilseplacencia.socials
     text: "Continue with email"
     waitUntilVisible: true
     retryTapIfNoChange: true
+# Drive 12 (run 39982962200): the COLD-CHANNEL LOAD FAILURE —
+# the class NeedsMe drive 4 named and was never charged for —
+# recurred on THIS door: the failure frame stands on the
+# password step with the app's own line spoken, "Your account
+# could not load. Try again.", the field cleared, the state
+# clean and retryable. This leg carried no retry for the line;
+# the staggered recovery below (NeedsMe v5's shape, with the
+# retype — the field stands empty) now stands before the entry
+# shapes, and the "Your Socials" judge behind them decides.
+- runFlow:
+    when:
+      visible: "Your account could not load. Try again."
+    commands:
+      - tapOn:
+          text: "Your password"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
+      - inputText: "${TEST_PASSWORD}"
+      - tapOn:
+          point: "90%, 62%"
+      - tapOn:
+          text: "Continue with email"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible: "Your account could not load. Try again."
+    commands:
+      - tapOn:
+          text: "Your password"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
+      - inputText: "${TEST_PASSWORD}"
+      - tapOn:
+          point: "90%, 62%"
+      - tapOn:
+          text: "Continue with email"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
 # Inside proof: TWO entry shapes stand in the evidence. A
 # FRESH account meets the tour CARD (the composed greeting
 # node; drive 4). A RETURNING account whose name was never
