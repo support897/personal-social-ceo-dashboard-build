@@ -420,12 +420,19 @@ appId: shop.ilseplacencia.socials
 # stands only while the signed-in planner stands; the lapsed
 # panel replaces it whole, so after a landed sign-out the
 # guard stands down).
+# DRIVE 19 (run 40009199351) died at the same tap, step-051 —
+# one step later (the settle) and the same closed hierarchy.
+# The v19 cure's structural flaw: the FIRST tap stayed FATAL,
+# so the guards behind it never ran. v20: no fatal tap stands
+# in this segment at all. The toggle is tapped by POINT —
+# (8%, 11%), the centre of its hierarchy bounds [14,74][53,113]
+# on both failure drives — then three conditional attempts
+# cover the states in order: the item-keyed tap (sidebar open),
+# a notVisible-keyed reopen by the same point with a nested
+# item tap (sidebar never opened), and the item-keyed tap
+# once more. The bonus wait below is the only judge.
 - tapOn:
-    text: "Collapse or open the sidebar"
-- waitForAnimationToEnd
-- tapOn:
-    text: "Sign out"
-    waitUntilVisible: true
+    point: "8%, 11%"
 - waitForAnimationToEnd
 - runFlow:
     when:
@@ -437,11 +444,23 @@ appId: shop.ilseplacencia.socials
       - waitForAnimationToEnd
 - runFlow:
     when:
-      visible: "Your planned post"
+      notVisible: "Sign out"
     commands:
       - tapOn:
-          text: "Collapse or open the sidebar"
+          point: "8%, 11%"
       - waitForAnimationToEnd
+      - runFlow:
+          when:
+            visible: "Sign out"
+          commands:
+            - tapOn:
+                text: "Sign out"
+                waitUntilVisible: true
+            - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible: "Sign out"
+    commands:
       - tapOn:
           text: "Sign out"
           waitUntilVisible: true
