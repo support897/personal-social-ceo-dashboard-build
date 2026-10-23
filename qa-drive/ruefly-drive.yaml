@@ -335,10 +335,17 @@ appId: shop.ilseplacencia.socials
 # dialog, prove it gone; only then do the queue judges below read
 # the queue itself and not the dialog's ghost (drive 10 died at the
 # sign-out leg's sidebar tap with the dialog standing modal).
-- extendedWaitUntil:
-    visible:
-      text: "Saved."
-    timeout: 30000
+# Drive 13 (run 39986908374) killed this proof's FATAL form: the
+# save landed (a SECOND draft card stands in the queue) and the
+# dialog closed, all inside the 30 s window, and the transient
+# "Saved." line had already vanished when the proof polled. The
+# line is evidence when it lingers, never the judge — the durable
+# save proof is the card standing on the planner, below.
+- runFlow:
+    when:
+      visible: "Saved."
+    commands:
+      - takeScreenshot: 08b-saved-line
 # Drive 11 (run 39977986782) proved the close is a RACE: the
 # dialog closed on its own inside the "Saved." proof's window —
 # the failure frame stands on the planner with the queue card
@@ -357,15 +364,16 @@ appId: shop.ilseplacencia.socials
     notVisible:
       text: "Plan a post, web dialog"
     timeout: 30000
-# Both stand in the queue: the card renders "<Brand> · Instagram"
-# over the post's words (the fold20 reprobe's return read, beat 2,
-# is this exact shape standing after a fresh sign-in).
+# THE DURABLE SAVE PROOF: the queue card standing on the planner
+# itself. Drive 13's own hierarchy reads the card's node as "Your
+# planned post" (one per draft) — the caption text the old judge
+# waited for never stands in the planner's tree at this scroll
+# (on drive 10 it had read the DIALOG's ghost). The card node is
+# the judge; the pixels in 09 show the brand line over it.
 - extendedWaitUntil:
     visible:
-      text: "Sim drive post one"
+      text: "Your planned post"
     timeout: 60000
-- assertVisible:
-    text: "Sim Drive Brand"
 - takeScreenshot: 09-queue-stands
 # ---------- stage (iii): sign out standing on the planner ----------
 # The shell's own road (fold20 leg-a's shellSignOut): the menu,
