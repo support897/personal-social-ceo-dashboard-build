@@ -1,0 +1,157 @@
+name: iOS Simulator DRIVE (Ruefly, QA)
+
+# Manual run only. QA Tester's drive lane for Ruefly candidate 20:
+# builds the SAME unsigned simulator copy as ios-sim.yml (the certified
+# tree from support897/ruefly, assembled and entry-checked exactly as
+# the device workflow assembles it), boots a simulator, installs it,
+# then drives the full finishing-order spine with Maestro
+# (qa-drive/ruefly-drive.yaml): sign up -> the identity line asserted
+# in the one-load paint -> the journey (brand + post standing in the
+# queue) -> sign out STANDING ON THE PLANNER (the fold panel is the
+# bonus read) -> return through the panel -> sign in -> post + brand
+# stand -> SECOND account, data never mixing. Stage screenshots + the
+# Maestro step records upload as the ruefly-sim-drive artefact on
+# EVERY outcome, pass or fail, so QA scores from evidence.
+# Test lane only: a pass here proves journeys, buttons, saving and
+# isolation ON A SIMULATOR; it proves nothing about the real-phone
+# door, whose pass lives on the device lane alone.
+# The device build + ios-ipa-upload.yml + ios-sim.yml are untouched
+# by this file.
+# Credentials: the tester passwords reach the drive only through the
+# repo secrets QA_RUEFLY_TEST_PASSWORD and QA_RUEFLY_TEST_PASSWORD2
+# (sealed by QA; the testers are QA-created test accounts under the
+# tester-account ruling, their casts held in QA's test record, never
+# in this repo).
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  drive:
+    runs-on: macos-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Guard the tester secrets
+        env:
+          TEST_PASSWORD: ${{ secrets.QA_RUEFLY_TEST_PASSWORD }}
+          TEST_PASSWORD2: ${{ secrets.QA_RUEFLY_TEST_PASSWORD2 }}
+        run: |
+          if [ -z "$TEST_PASSWORD" ] || [ -z "$TEST_PASSWORD2" ]; then
+            echo "::error::QA_RUEFLY_TEST_PASSWORD and/or QA_RUEFLY_TEST_PASSWORD2 secret is not set on this repo; the drive cannot run its two accounts. QA seals them; nothing else is missing."
+            exit 1
+          fi
+          echo "Tester secrets present."
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Assemble the certified web tree and sync iOS (device workflow's own steps)
+        run: |
+          curl -fsSL https://codeload.github.com/support897/ruefly/tar.gz/refs/heads/main -o "$RUNNER_TEMP/certified.tgz"
+          mkdir -p certified-tree
+          tar -xzf "$RUNNER_TEMP/certified.tgz" -C certified-tree --strip-components=1
+          rm -rf dist
+          cp -r certified-tree dist
+          md5 -r dist/assets/main-*.js
+          perl -pe 's|\.\./|./|g' dist/app/index.html > dist/index.html.promoted
+          mv dist/index.html.promoted dist/index.html
+          grep -q 'id="app"' dist/index.html
+          grep -q 'assets/main-' dist/index.html
+          if grep -q 'Open the app' dist/index.html; then echo "ENTRY CHECK FAILED: landing wrapped as entry" >&2; exit 1; fi
+          if grep -q 'your socials team, in one calm place' dist/index.html; then echo "ENTRY CHECK FAILED: landing wrapped as entry" >&2; exit 1; fi
+          npx cap sync ios
+          grep -q 'id="app"' ios/App/App/public/index.html
+          grep -q 'assets/main-' ios/App/App/public/index.html
+          if grep -q 'Open the app' ios/App/App/public/index.html; then echo "SYNCED ENTRY CHECK FAILED: landing in shipped bundle" >&2; exit 1; fi
+
+      - name: Build the simulator copy (no signing)
+        run: |
+          xcodebuild build \
+            -project ios/App/App.xcodeproj \
+            -scheme App \
+            -configuration Release \
+            -destination "generic/platform=iOS Simulator" \
+            -derivedDataPath "$RUNNER_TEMP/sim-build" \
+            CODE_SIGNING_ALLOWED=NO
+          find "$RUNNER_TEMP/sim-build/Build/Products" -maxdepth 2 -name "*.app" -print
+
+      - name: Boot a simulator and install the copy
+        run: |
+          set -euo pipefail
+          APP_PATH=$(find "$RUNNER_TEMP/sim-build/Build/Products" -maxdepth 2 -name "App.app" | head -1)
+          echo "App: $APP_PATH"
+          UDID=$(python3 - <<'PY'
+          import json, subprocess
+          data = json.loads(subprocess.check_output(["xcrun", "simctl", "list", "-j", "devices", "available"]))
+          best = None
+          for runtime, devs in data["devices"].items():
+              if "iOS" not in runtime:
+                  continue
+              for d in devs:
+                  if d["name"].startswith("iPhone") and d.get("isAvailable", True):
+                      ver = runtime.rsplit("-", 1)[-1]
+                      if best is None or ver > best[0]:
+                          best = (ver, d["udid"], d["name"])
+          print(best[1])
+          PY
+          )
+          echo "Simulator: $UDID"
+          xcrun simctl boot "$UDID" || true
+          xcrun simctl bootstatus "$UDID" -b
+          xcrun simctl install booted "$APP_PATH"
+
+      - name: Install Maestro
+        run: |
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+
+      - name: Drive the spine (Maestro)
+        env:
+          TEST_EMAIL: "qa-ruefly-sim-a-51740296@example.com"
+          TEST_PASSWORD: ${{ secrets.QA_RUEFLY_TEST_PASSWORD }}
+          TEST_EMAIL2: "qa-ruefly-sim-b-51740296@example.com"
+          TEST_PASSWORD2: ${{ secrets.QA_RUEFLY_TEST_PASSWORD2 }}
+          MAESTRO_DRIVER_START_TIMEOUT: "180"
+        run: |
+          maestro test \
+            -e TEST_EMAIL="$TEST_EMAIL" \
+            -e TEST_PASSWORD="$TEST_PASSWORD" \
+            -e TEST_EMAIL2="$TEST_EMAIL2" \
+            -e TEST_PASSWORD2="$TEST_PASSWORD2" \
+            qa-drive/ruefly-drive.yaml
+
+      - name: Collect the drive record
+        if: always()
+        run: |
+          mkdir -p "$RUNNER_TEMP/drive-record"
+          find "$HOME/.maestro" -name "*.png" -exec cp {} "$RUNNER_TEMP/drive-record/" \; 2>/dev/null || true
+          # Step records only (hierarchy dumps). commands.json is NEVER
+          # collected: Maestro records the drive env (incl. the tester
+          # passwords) in plaintext in it — Pace v1's artefact carried
+          # it and the value had to be treated as burnt (QA, 22 Oct).
+          find "$HOME/.maestro" -name "step-*.json" -exec cp {} "$RUNNER_TEMP/drive-record/" \; 2>/dev/null || true
+          xcrun simctl io booted screenshot "$RUNNER_TEMP/drive-record/final-frame.png" || true
+          ls -la "$RUNNER_TEMP/drive-record/" || true
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ruefly-sim-drive
+          path: ${{ runner.temp }}/drive-record/
+          if-no-files-found: warn
+          retention-days: 30
