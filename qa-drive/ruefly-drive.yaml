@@ -48,7 +48,8 @@ appId: shop.ilseplacencia.socials
     text: "you@example.com"
     waitUntilVisible: true
 - inputText: "${TEST_EMAIL}"
-- hideKeyboard
+- tapOn:
+    point: "90%, 62%"  # WKWebView accessory Done (hideKeyboard class cure)
 - takeScreenshot: 01-email-step
 - tapOn:
     text: "Next"
@@ -57,7 +58,8 @@ appId: shop.ilseplacencia.socials
     text: "Your password"
     waitUntilVisible: true
 - inputText: "${TEST_PASSWORD}"
-- hideKeyboard
+- tapOn:
+    point: "90%, 62%"  # WKWebView accessory Done (hideKeyboard class cure)
 - takeScreenshot: 02-password-step
 - tapOn:
     text: "Continue with email"
@@ -114,7 +116,8 @@ appId: shop.ilseplacencia.socials
     text: "Brand name"
     waitUntilVisible: true
 - inputText: "Sim Drive Brand"
-- hideKeyboard
+- tapOn:
+    point: "90%, 62%"  # WKWebView accessory Done (hideKeyboard class cure)
 - takeScreenshot: 07-composer-brand
 - tapOn:
     text: "Add a brand"
@@ -123,7 +126,8 @@ appId: shop.ilseplacencia.socials
     text: "Write the words for this post…"
     waitUntilVisible: true
 - inputText: "Sim drive post one"
-- hideKeyboard
+- tapOn:
+    point: "90%, 62%"  # WKWebView accessory Done (hideKeyboard class cure)
 - takeScreenshot: 08-composer-post
 - tapOn:
     text: "Save"
@@ -172,7 +176,8 @@ appId: shop.ilseplacencia.socials
     text: "you@example.com"
     waitUntilVisible: true
 - inputText: "${TEST_EMAIL}"
-- hideKeyboard
+- tapOn:
+    point: "90%, 62%"  # WKWebView accessory Done (hideKeyboard class cure)
 - tapOn:
     text: "Next"
     waitUntilVisible: true
@@ -180,7 +185,8 @@ appId: shop.ilseplacencia.socials
     text: "Your password"
     waitUntilVisible: true
 - inputText: "${TEST_PASSWORD}"
-- hideKeyboard
+- tapOn:
+    point: "90%, 62%"  # WKWebView accessory Done (hideKeyboard class cure)
 - takeScreenshot: 11-return-password-step
 - tapOn:
     text: "Continue with email"
@@ -223,7 +229,8 @@ appId: shop.ilseplacencia.socials
     text: "you@example.com"
     waitUntilVisible: true
 - inputText: "${TEST_EMAIL2}"
-- hideKeyboard
+- tapOn:
+    point: "90%, 62%"  # WKWebView accessory Done (hideKeyboard class cure)
 - tapOn:
     text: "Next"
     waitUntilVisible: true
@@ -231,7 +238,8 @@ appId: shop.ilseplacencia.socials
     text: "Your password"
     waitUntilVisible: true
 - inputText: "${TEST_PASSWORD2}"
-- hideKeyboard
+- tapOn:
+    point: "90%, 62%"  # WKWebView accessory Done (hideKeyboard class cure)
 - tapOn:
     text: "Continue with email"
     waitUntilVisible: true
