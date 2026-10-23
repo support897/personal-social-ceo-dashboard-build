@@ -502,22 +502,55 @@ appId: shop.ilseplacencia.socials
     timeout: 60000
 - takeScreenshot: 12-return-queue-stands
 # The identity line stands again, on Home.
+# DRIVE 16 (run 39998557722) died at this identity wait,
+# step-076: the toggle opened the sidebar (frame + hierarchy
+# agree) and the "Your Socials" tap executed, but navigation
+# never took — the app stood on the Planner at the wait's end,
+# Planner still highlighted, no Home node in the tree. The
+# tap fired while the sidebar was still sliding (waitUntil
+# Visible returns mid-animation; the tap meets a moving row).
+# SIDEBAR-TAP RACE. Cure: settle after the toggle and after
+# the tap, plus one staggered retry keyed on the Planner-only
+# "Your queue" heading — it stands in the tree under the open
+# sidebar exactly in the failure state, and never on Home.
 - tapOn:
     text: "Collapse or open the sidebar"
+- waitForAnimationToEnd
 - tapOn:
     text: "Your Socials"
     waitUntilVisible: true
+- waitForAnimationToEnd
+- runFlow:
+    when:
+      visible: "Your queue"
+    commands:
+      - tapOn:
+          text: "Your Socials"
+          waitUntilVisible: true
+      - waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
       text: "Signed in as"
     timeout: 60000
 - takeScreenshot: 13-return-identity
 # ---------- sign out again (standing on Home; no bonus here) -------
+# The same sidebar-tap race guards this tap (v17): settle
+# after the toggle, and one conditional retry keyed on the
+# "Sign out" item itself — it exists only in the sidebar, so
+# after a landed sign-out the retry stands down on the door.
 - tapOn:
     text: "Collapse or open the sidebar"
+- waitForAnimationToEnd
 - tapOn:
     text: "Sign out"
     waitUntilVisible: true
+- runFlow:
+    when:
+      visible: "Sign out"
+    commands:
+      - tapOn:
+          text: "Sign out"
+          waitUntilVisible: true
 - extendedWaitUntil:
     visible:
       text: "Sign in or make your account"
