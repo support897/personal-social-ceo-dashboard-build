@@ -145,6 +145,15 @@ jobs:
           # passwords) in plaintext in it — Pace v1's artefact carried
           # it and the value had to be treated as burnt (QA, 22 Oct).
           find "$HOME/.maestro" -name "step-*.json" -exec cp {} "$RUNNER_TEMP/drive-record/" \; 2>/dev/null || true
+          # Session-dir sweep (drive 2 lesson, run 39945008375): Maestro
+          # keeps a run's evidence — screenshots + hierarchy JSONs —
+          # under ~/.maestro/tests/<timestamp>/; sweep that dir
+          # explicitly so even an early death ships its own record.
+          # commands.json stays excluded wherever it lives (Security
+          # condition 2): it is named out of this sweep by name.
+          if [ -d "$HOME/.maestro/tests" ]; then
+            find "$HOME/.maestro/tests" \( -name "*.png" -o -name "*.json" \) ! -name "commands.json" -exec cp {} "$RUNNER_TEMP/drive-record/" \; 2>/dev/null || true
+          fi
           xcrun simctl io booted screenshot "$RUNNER_TEMP/drive-record/final-frame.png" || true
           ls -la "$RUNNER_TEMP/drive-record/" || true
 
