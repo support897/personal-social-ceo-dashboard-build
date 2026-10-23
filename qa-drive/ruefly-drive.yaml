@@ -1,4 +1,9 @@
 # Ruefly 20 simulator drive — QA Tester chair.
+# Version: v25 (2026-10-24) — B's door leg gains a THIRD
+# staggered load-line recovery (drive 24: the pair fired and
+# the channel ate all three submits; QA's REST discriminator
+# proves B's account whole). v24 mirrored the A leg's pair
+# onto the return + B legs (drive 23's cure).
 # Version: v23 (2026-10-24) — v9's IDENTITY CURE LANDED on
 # drive 9 (run 39969500909): the entry landed straight on
 # the named home ("Hello," + "Sim Driver RF" standing as
@@ -739,6 +744,32 @@ appId: shop.ilseplacencia.socials
     retryTapIfNoChange: true
 # v24: the A leg's staggered load-line pair, B's password (the
 # drive 23 cure — see the return leg's note).
+# DRIVE 24 (run 40032278468) died at the same step with the
+# same frame: the pair fired and the channel ate all three
+# submits. QA's REST discriminator (24 Oct) proves B's account
+# WHOLE: sign-in OK (uid 6Laacus47XgQpGndKXNJwDGKcdG3), the
+# users doc reads 200 complete with B's own token. The fault
+# is the simulator channel at the drive's end, not the account
+# and not the app. Cure (v25): a THIRD staggered recovery on
+# this leg — the stagger is the settle, and three failures in
+# a row is the disease's proven depth here.
+- runFlow:
+    when:
+      visible: "Your account could not load. Try again."
+    commands:
+      - tapOn:
+          text: "Your password"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
+      - inputText: "${TEST_PASSWORD2}"
+      - tapOn:
+          point: "90%, 62%"
+      - tapOn:
+          text: "Continue with email"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
 - runFlow:
     when:
       visible: "Your account could not load. Try again."
