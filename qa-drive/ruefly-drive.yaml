@@ -286,6 +286,24 @@ appId: shop.ilseplacencia.socials
 - tapOn:
     text: "Save"
     waitUntilVisible: true
+# The save lands on the dialog itself ("Saved." stands in its tree,
+# drive 10's step-045 hierarchy) and the dialog STAYS open — its
+# close is the user's own Cancel tap. Prove the save, close the
+# dialog, prove it gone; only then do the queue judges below read
+# the queue itself and not the dialog's ghost (drive 10 died at the
+# sign-out leg's sidebar tap with the dialog standing modal).
+- extendedWaitUntil:
+    visible:
+      text: "Saved."
+    timeout: 30000
+- tapOn:
+    text: "Cancel"
+    waitUntilVisible: true
+    retryTapIfNoChange: true
+- extendedWaitUntil:
+    notVisible:
+      text: "Plan a post, web dialog"
+    timeout: 30000
 # Both stand in the queue: the card renders "<Brand> · Instagram"
 # over the post's words (the fold20 reprobe's return read, beat 2,
 # is this exact shape standing after a fresh sign-in).
