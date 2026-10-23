@@ -352,10 +352,30 @@ appId: shop.ilseplacencia.socials
 # already rendered — and the unconditional Cancel tap then had
 # nothing to tap. The close is now conditional on the dialog
 # still standing; the notVisible proof below judges either way.
+# Drive 14 (run 39991154339) died at the notVisible proof
+# below, step-048: the save landed ("Saved." stands in the
+# failure hierarchy, the 08b evidence frame fired) and the
+# dialog stayed open BY DESIGN — but the Cancel tap never
+# reached it. The failure hierarchy measures why: "Cancel"
+# stands at y 569-615, and the iOS KEYBOARD TUTORIAL card
+# ("Speed up your typing...", its "Continue" at y 819-840)
+# covers the screen's lower half, because the caption field
+# still holds focus after the save. Both Cancel taps (the
+# retry included) hit the tutorial card. Cure: dismiss the
+# tutorial first, conditionally, by its own text — it stands
+# only while a field holds first-use focus.
 - runFlow:
     when:
       visible: "Plan a post, web dialog"
     commands:
+      - runFlow:
+          when:
+            visible: "Speed up your typing by sliding your finger across the letters to compose a word."
+          commands:
+            - tapOn:
+                text: "Continue"
+                waitUntilVisible: true
+            - waitForAnimationToEnd
       - tapOn:
           text: "Cancel"
           waitUntilVisible: true
