@@ -1,4 +1,9 @@
 # Ruefly 20 simulator drive — QA Tester chair.
+# Version: v27 (2026-10-24) — both A-side legs gain a
+# THIRD staggered load-line recovery, parity with the
+# second account's leg (drive 26: the return leg's pair
+# was out-eaten — initial submit plus both recoveries —
+# and the load line still stood at the death judge).
 # Version: v26 (2026-10-24) — every password leg gains the
 # placeholder retype net + the "Type your password first."
 # recovery pair (drive 25: at A's door the type raced and
@@ -268,6 +273,23 @@ appId: shop.ilseplacencia.socials
 # the staggered recovery below (NeedsMe v5's shape, with the
 # retype — the field stands empty) now stands before the entry
 # shapes, and the "Your Socials" judge behind them decides.
+- runFlow:
+    when:
+      visible: "Your account could not load. Try again."
+    commands:
+      - tapOn:
+          text: "Your password"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
+      - inputText: "${TEST_PASSWORD}"
+      - tapOn:
+          point: "90%, 62%"
+      - tapOn:
+          text: "Continue with email"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
 - runFlow:
     when:
       visible: "Your account could not load. Try again."
@@ -694,6 +716,23 @@ appId: shop.ilseplacencia.socials
 # cleared, and this leg carried NO recovery: the tour wait ate
 # the window. The A leg's proven staggered pair (drive 12's
 # cure) now stands on the return and B legs too.
+- runFlow:
+    when:
+      visible: "Your account could not load. Try again."
+    commands:
+      - tapOn:
+          text: "Your password"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
+      - inputText: "${TEST_PASSWORD}"
+      - tapOn:
+          point: "90%, 62%"
+      - tapOn:
+          text: "Continue with email"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
 - runFlow:
     when:
       visible: "Your account could not load. Try again."
