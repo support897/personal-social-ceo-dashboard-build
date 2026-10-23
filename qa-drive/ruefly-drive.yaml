@@ -1,4 +1,13 @@
 # Ruefly 20 simulator drive — QA Tester chair.
+# Version: v26 (2026-10-24) — every password leg gains the
+# placeholder retype net + the "Type your password first."
+# recovery pair (drive 25: at A's door the type raced and
+# never landed, the dismissal point tap fired the reset
+# link while the keyboard was down — the dismissal-point
+# hazard — and the submit spoke the line with no recovery
+# standing; the app spoke honestly throughout, and the
+# reset send changes nothing: A's password stands, proven
+# by QA's REST sign-in the same morning).
 # Version: v25 (2026-10-24) — B's door leg gains a THIRD
 # staggered load-line recovery (drive 24: the pair fired and
 # the channel ate all three submits; QA's REST discriminator
@@ -176,10 +185,80 @@ appId: shop.ilseplacencia.socials
     visible:
       text: "Continue with email"
     timeout: 90000
+# v26 PLACEHOLDER RETYPE NET (drive 25 cure — see the version
+# note): while the placeholder node stands, the field is
+# EMPTY (a filled secure field reads as bullets, never the
+# placeholder — NeedsMe's settled law). Erase-first retype,
+# staggered twice, before the submit.
+- runFlow:
+    when:
+      visible: "Password"
+    commands:
+      - tapOn:
+          text: "Your password"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
+      - eraseText: 60
+      - inputText: "${TEST_PASSWORD}"
+      - tapOn:
+          point: "90%, 62%"
+- runFlow:
+    when:
+      visible: "Password"
+    commands:
+      - tapOn:
+          text: "Your password"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
+      - eraseText: 60
+      - inputText: "${TEST_PASSWORD}"
+      - tapOn:
+          point: "90%, 62%"
 - tapOn:
     text: "Continue with email"
     waitUntilVisible: true
     retryTapIfNoChange: true
+# v26: the spoken-line recovery for "Type your password
+# first." — drive 25's submit spoke it and no recovery stood
+# on this door. The load-line pair's shape, erase-first.
+- runFlow:
+    when:
+      visible: "Type your password first."
+    commands:
+      - tapOn:
+          text: "Your password"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
+      - eraseText: 60
+      - inputText: "${TEST_PASSWORD}"
+      - tapOn:
+          point: "90%, 62%"
+      - tapOn:
+          text: "Continue with email"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible: "Type your password first."
+    commands:
+      - tapOn:
+          text: "Your password"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
+      - eraseText: 60
+      - inputText: "${TEST_PASSWORD}"
+      - tapOn:
+          point: "90%, 62%"
+      - tapOn:
+          text: "Continue with email"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
 # Drive 12 (run 39982962200): the COLD-CHANNEL LOAD FAILURE —
 # the class NeedsMe drive 4 named and was never charged for —
 # recurred on THIS door: the failure frame stands on the
@@ -540,10 +619,75 @@ appId: shop.ilseplacencia.socials
     visible:
       text: "Continue with email"
     timeout: 90000
+# v26: the placeholder retype net (as at stage (i)).
+- runFlow:
+    when:
+      visible: "Password"
+    commands:
+      - tapOn:
+          text: "Your password"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
+      - eraseText: 60
+      - inputText: "${TEST_PASSWORD}"
+      - tapOn:
+          point: "90%, 62%"
+- runFlow:
+    when:
+      visible: "Password"
+    commands:
+      - tapOn:
+          text: "Your password"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
+      - eraseText: 60
+      - inputText: "${TEST_PASSWORD}"
+      - tapOn:
+          point: "90%, 62%"
 - tapOn:
     text: "Continue with email"
     waitUntilVisible: true
     retryTapIfNoChange: true
+# v26: the "Type your password first." recovery pair (as at
+# stage (i)).
+- runFlow:
+    when:
+      visible: "Type your password first."
+    commands:
+      - tapOn:
+          text: "Your password"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
+      - eraseText: 60
+      - inputText: "${TEST_PASSWORD}"
+      - tapOn:
+          point: "90%, 62%"
+      - tapOn:
+          text: "Continue with email"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible: "Type your password first."
+    commands:
+      - tapOn:
+          text: "Your password"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
+      - eraseText: 60
+      - inputText: "${TEST_PASSWORD}"
+      - tapOn:
+          point: "90%, 62%"
+      - tapOn:
+          text: "Continue with email"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
 # v24 (drive 23, run 40028221949): the COLD-CHANNEL LOAD
 # FAILURE struck the SECOND account's door — the failure frame
 # stands on B's password step, the line spoken, the field
@@ -738,10 +882,76 @@ appId: shop.ilseplacencia.socials
     visible:
       text: "Continue with email"
     timeout: 90000
+# v26: the placeholder retype net (as at stage (i)), B's
+# password.
+- runFlow:
+    when:
+      visible: "Password"
+    commands:
+      - tapOn:
+          text: "Your password"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
+      - eraseText: 60
+      - inputText: "${TEST_PASSWORD2}"
+      - tapOn:
+          point: "90%, 62%"
+- runFlow:
+    when:
+      visible: "Password"
+    commands:
+      - tapOn:
+          text: "Your password"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
+      - eraseText: 60
+      - inputText: "${TEST_PASSWORD2}"
+      - tapOn:
+          point: "90%, 62%"
 - tapOn:
     text: "Continue with email"
     waitUntilVisible: true
     retryTapIfNoChange: true
+# v26: the "Type your password first." recovery pair (as at
+# stage (i)), B's password.
+- runFlow:
+    when:
+      visible: "Type your password first."
+    commands:
+      - tapOn:
+          text: "Your password"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
+      - eraseText: 60
+      - inputText: "${TEST_PASSWORD2}"
+      - tapOn:
+          point: "90%, 62%"
+      - tapOn:
+          text: "Continue with email"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible: "Type your password first."
+    commands:
+      - tapOn:
+          text: "Your password"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
+      - eraseText: 60
+      - inputText: "${TEST_PASSWORD2}"
+      - tapOn:
+          point: "90%, 62%"
+      - tapOn:
+          text: "Continue with email"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
 # v24: the A leg's staggered load-line pair, B's password (the
 # drive 23 cure — see the return leg's note).
 # DRIVE 24 (run 40032278468) died at the same step with the
