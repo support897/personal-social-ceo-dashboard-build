@@ -408,11 +408,44 @@ appId: shop.ilseplacencia.socials
 # ---------- stage (iii): sign out standing on the planner ----------
 # The shell's own road (fold20 leg-a's shellSignOut): the menu,
 # then "Sign out".
+# DRIVE 18 (run 40004618039) died AT this tap, step-050: the
+# failure hierarchy stands on the Planner with the sidebar
+# CLOSED and no "Sign out" node anywhere — the bare toggle tap
+# was eaten on the fresh planner (v18's named-Done close had
+# landed whole seconds before; 09 stands). The pair carried no
+# settle and no retry. Cure (v19): settles around the tap,
+# then two staggered guards for the pair's two failure states
+# — the v17 item-keyed tap (the sidebar open, the item still
+# standing), then a card-keyed reopen ("Your planned post"
+# stands only while the signed-in planner stands; the lapsed
+# panel replaces it whole, so after a landed sign-out the
+# guard stands down).
 - tapOn:
     text: "Collapse or open the sidebar"
+- waitForAnimationToEnd
 - tapOn:
     text: "Sign out"
     waitUntilVisible: true
+- waitForAnimationToEnd
+- runFlow:
+    when:
+      visible: "Sign out"
+    commands:
+      - tapOn:
+          text: "Sign out"
+          waitUntilVisible: true
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible: "Your planned post"
+    commands:
+      - tapOn:
+          text: "Collapse or open the sidebar"
+      - waitForAnimationToEnd
+      - tapOn:
+          text: "Sign out"
+          waitUntilVisible: true
+      - waitForAnimationToEnd
 # ---------- BONUS ASSERTION — the fold20 lapsed landing ------------
 # Named bonus, not spine: this drive signs out standing on
 # #/planner, so it passes through the fold's own surface. The
