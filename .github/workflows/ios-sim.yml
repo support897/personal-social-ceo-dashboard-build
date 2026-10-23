@@ -1,0 +1,100 @@
+name: iOS Simulator Copy (Ruefly)
+
+# Manual run only. Builds an UNSIGNED simulator copy of the SAME tree the
+# device workflow ships (the certified tree from support897/ruefly, assembled
+# and entry-checked exactly as the device workflow assembles it), boots a
+# simulator on the runner, installs + cold-launches the copy, and captures a
+# first-open screenshot. Test lane only: proves nothing about the real phone
+# door; the device build + ios-ipa-upload.yml are untouched by this file.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sim:
+    runs-on: macos-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Assemble the certified web tree and sync iOS (device workflow's own steps)
+        run: |
+          curl -fsSL https://codeload.github.com/support897/ruefly/tar.gz/refs/heads/main -o "$RUNNER_TEMP/certified.tgz"
+          mkdir -p certified-tree
+          tar -xzf "$RUNNER_TEMP/certified.tgz" -C certified-tree --strip-components=1
+          rm -rf dist
+          cp -r certified-tree dist
+          md5 -r dist/assets/main-*.js
+          perl -pe 's|\.\./|./|g' dist/app/index.html > dist/index.html.promoted
+          mv dist/index.html.promoted dist/index.html
+          grep -q 'id="app"' dist/index.html
+          grep -q 'assets/main-' dist/index.html
+          if grep -q 'Open the app' dist/index.html; then echo "ENTRY CHECK FAILED: landing wrapped as entry" >&2; exit 1; fi
+          if grep -q 'your socials team, in one calm place' dist/index.html; then echo "ENTRY CHECK FAILED: landing wrapped as entry" >&2; exit 1; fi
+          npx cap sync ios
+          grep -q 'id="app"' ios/App/App/public/index.html
+          grep -q 'assets/main-' ios/App/App/public/index.html
+          if grep -q 'Open the app' ios/App/App/public/index.html; then echo "SYNCED ENTRY CHECK FAILED: landing in shipped bundle" >&2; exit 1; fi
+
+      - name: Build the simulator copy (no signing)
+        run: |
+          xcodebuild build \
+            -project ios/App/App.xcodeproj \
+            -scheme App \
+            -configuration Release \
+            -destination "generic/platform=iOS Simulator" \
+            -derivedDataPath "$RUNNER_TEMP/sim-build" \
+            CODE_SIGNING_ALLOWED=NO
+          find "$RUNNER_TEMP/sim-build/Build/Products" -maxdepth 2 -name "*.app" -print
+
+      - name: Boot a simulator, install, cold-launch, screenshot
+        run: |
+          set -euo pipefail
+          APP_PATH=$(find "$RUNNER_TEMP/sim-build/Build/Products" -maxdepth 2 -name "App.app" | head -1)
+          echo "App: $APP_PATH"
+          UDID=$(python3 - <<'PY'
+          import json, subprocess
+          data = json.loads(subprocess.check_output(["xcrun", "simctl", "list", "-j", "devices", "available"]))
+          best = None
+          for runtime, devs in data["devices"].items():
+              if "iOS" not in runtime:
+                  continue
+              for d in devs:
+                  if d["name"].startswith("iPhone") and d.get("isAvailable", True):
+                      ver = runtime.rsplit("-", 1)[-1]
+                      if best is None or ver > best[0]:
+                          best = (ver, d["udid"], d["name"])
+          print(best[1])
+          PY
+          )
+          echo "Simulator: $UDID"
+          xcrun simctl boot "$UDID" || true
+          xcrun simctl bootstatus "$UDID" -b
+          xcrun simctl install booted "$APP_PATH"
+          xcrun simctl launch booted shop.ilseplacencia.socials
+          sleep 8
+          xcrun simctl io booted screenshot "$RUNNER_TEMP/ruefly-first-open.png"
+          ls -la "$RUNNER_TEMP/ruefly-first-open.png"
+          cd "$RUNNER_TEMP/sim-build/Build/Products/Release-iphonesimulator"
+          ditto -c -k --sequesterRsrc --keepParent App.app "$RUNNER_TEMP/ruefly-sim-app.zip"
+          ls -la "$RUNNER_TEMP/ruefly-sim-app.zip"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ruefly-sim-copy
+          path: |
+            ${{ runner.temp }}/ruefly-sim-app.zip
+            ${{ runner.temp }}/ruefly-first-open.png
+          if-no-files-found: error
+          retention-days: 30
