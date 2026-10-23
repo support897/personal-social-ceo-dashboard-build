@@ -296,10 +296,20 @@ appId: shop.ilseplacencia.socials
     visible:
       text: "Saved."
     timeout: 30000
-- tapOn:
-    text: "Cancel"
-    waitUntilVisible: true
-    retryTapIfNoChange: true
+# Drive 11 (run 39977986782) proved the close is a RACE: the
+# dialog closed on its own inside the "Saved." proof's window —
+# the failure frame stands on the planner with the queue card
+# already rendered — and the unconditional Cancel tap then had
+# nothing to tap. The close is now conditional on the dialog
+# still standing; the notVisible proof below judges either way.
+- runFlow:
+    when:
+      visible: "Plan a post, web dialog"
+    commands:
+      - tapOn:
+          text: "Cancel"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
 - extendedWaitUntil:
     notVisible:
       text: "Plan a post, web dialog"
