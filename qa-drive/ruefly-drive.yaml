@@ -1,0 +1,294 @@
+# Ruefly 20 simulator drive — QA Tester chair.
+# The FINISHING ORDER spine for candidate 20's simulator copy
+# (bundle shop.ilseplacencia.socials, CFBundleVersion 20, shipped
+# chunk main-DGmhFNUT.js; QA's custody + verdict of record:
+# verdict-ruefly-b20-retest.md — CLEAN at the packaged layer,
+# candidate of record). NOTE: SU has not written a Ruefly sim-copy
+# set yet (Ruefly is last in the queue) — there is no PINS.md for
+# this app; the copy's identity facts above are QA's own custody
+# reads from the verdict, and the flow's appId is the bundle id
+# from that custody.
+# Spine: sign up -> Home's identity line stands (the F-RF17-1 cure
+# surface, re-proven here) -> the journey (a brand created through
+# the Plan-a-post road + a post planned under it, both standing in
+# the queue) -> sign out standing on the planner (the fold20
+# lapsed landing asserted as a named BONUS, this drive passes
+# through the fold's own surface) -> sign in through the panel's
+# button -> identity + brand + post standing -> a SECOND account
+# whose space holds none of it.
+# Structural template: pace-drive.yaml v2 + the sibling spine
+# flows — every tap waits until its target is visible.
+# TEST_EMAIL / TEST_PASSWORD / TEST_EMAIL2 / TEST_PASSWORD2 arrive
+# as workflow env at dispatch (passwords from QA's mode-600 cast,
+# sealed the Pace way); the values never appear in this file or
+# the repo. NOTE: Maestro's commands.json records env values in
+# plaintext — the workflow's collect step must NOT upload
+# commands.json (the Pace v1 lesson; see pace-drive.yaml +
+# ios-sim-drive.yml).
+# Selector provenance for every string below:
+# ruefly-drive-NOTES.md.
+appId: shop.ilseplacencia.socials
+---
+# ---------- cold open: the door ------------------------------------
+# A cold signed-out arrival reads the door alone (the b18 planner
+# leg's (b) read + the delete leg's final door text). The door
+# heading is the cold proof.
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      text: "Sign in or make your account"
+    timeout: 90000
+- takeScreenshot: 00-door
+# ---------- stage (i): sign up, account 1 (email step, then --------
+# ---------- password step; the door's roads are the b18/fold20 -----
+# ---------- instruments' own: #fbEmailLogin -> #fbDoorForm, ---------
+# ---------- #fbPasswordLogin -> #fbPwForm) ---------------------------
+- tapOn:
+    text: "you@example.com"
+    waitUntilVisible: true
+- inputText: "${TEST_EMAIL}"
+- hideKeyboard
+- takeScreenshot: 01-email-step
+- tapOn:
+    text: "Next"
+    waitUntilVisible: true
+- tapOn:
+    text: "Your password"
+    waitUntilVisible: true
+- inputText: "${TEST_PASSWORD}"
+- hideKeyboard
+- takeScreenshot: 02-password-step
+- tapOn:
+    text: "Continue with email"
+    waitUntilVisible: true
+# Inside proof: the signed-in shell's topbar title stands (the
+# harness oracle: "Your Socials" present, the door gone).
+- extendedWaitUntil:
+    visible:
+      text: "Your Socials"
+    timeout: 90000
+- takeScreenshot: 03-inside-home-onload
+# ---------- the identity line (F-RF17-1's cure surface) -------------
+# Home's ONE-LOAD paint names the signed-in account: the b18
+# identity leg's criterion, asserted here in the same paint (the
+# tour overlay stands in this paint too — the line stands under
+# it, exactly as the leg read it).
+- assertVisible:
+    text: "Signed in as ${TEST_EMAIL}"
+- takeScreenshot: 04-identity-line
+# ---------- the first-entry tour: skipped by its own control --------
+# The tour stands over Home on a fresh account (its name step is
+# step 0, the only step carrying "Skip tour"). This spine's
+# identity marker is the email line above, not a tour name, so
+# the tour is skipped, never walked.
+- tapOn:
+    text: "Skip tour"
+    waitUntilVisible: true
+- extendedWaitUntil:
+    notVisible:
+      text: "What's your name?"
+    timeout: 30000
+- takeScreenshot: 05-tour-skipped
+# ---------- stage (ii): the journey — the planner ------------------
+- tapOn:
+    id: "menuBtn"
+- tapOn:
+    text: "Planner"
+    waitUntilVisible: true
+- extendedWaitUntil:
+    visible:
+      text: "Plan a post"
+    timeout: 60000
+- takeScreenshot: 06-planner
+# ---------- the Plan-a-post road: brand first, then the post -------
+# The b18 delete leg's + fold20 leg-a's own setup road, verbatim
+# in shape: Plan a post -> the composer's Brand name field ->
+# "Add a brand" -> the caption field -> "Save". The created brand
+# is the composer's selected brand (the queue card below proves
+# the pairing).
+- tapOn:
+    text: "Plan a post"
+    waitUntilVisible: true
+- tapOn:
+    text: "Brand name"
+    waitUntilVisible: true
+- inputText: "Sim Drive Brand"
+- hideKeyboard
+- takeScreenshot: 07-composer-brand
+- tapOn:
+    text: "Add a brand"
+    waitUntilVisible: true
+- tapOn:
+    text: "Write the words for this post…"
+    waitUntilVisible: true
+- inputText: "Sim drive post one"
+- hideKeyboard
+- takeScreenshot: 08-composer-post
+- tapOn:
+    text: "Save"
+    waitUntilVisible: true
+# Both stand in the queue: the card renders "<Brand> · Instagram"
+# over the post's words (the fold20 reprobe's return read, beat 2,
+# is this exact shape standing after a fresh sign-in).
+- extendedWaitUntil:
+    visible:
+      text: "Sim drive post one"
+    timeout: 60000
+- assertVisible:
+    text: "Sim Drive Brand"
+- takeScreenshot: 09-queue-stands
+# ---------- stage (iii): sign out standing on the planner ----------
+# The shell's own road (fold20 leg-a's shellSignOut): the menu,
+# then "Sign out".
+- tapOn:
+    id: "menuBtn"
+- tapOn:
+    text: "Sign out"
+    waitUntilVisible: true
+# ---------- BONUS ASSERTION — the fold20 lapsed landing ------------
+# Named bonus, not spine: this drive signs out standing on
+# #/planner, so it passes through the fold's own surface. The
+# landing of record (verdict-ruefly-b20-retest.md, leg-a +
+# reprobe landing reads): the panel renders IN PLACE — the panel
+# line + its Sign in button — with the signed-in data already
+# gone from the text and nobody named. Maestro cannot read the
+# hash; #/planner's survival through the door is the verdict's
+# harness-proven read and is not re-asserted here.
+- extendedWaitUntil:
+    visible:
+      text: "The planner lives in your account. Sign in to plan your posts."
+    timeout: 90000
+- assertVisible:
+    text: "Sign in"
+- assertNotVisible:
+    text: "Sim drive post one"
+- takeScreenshot: 10-lapsed-panel
+# ---------- stage (iv): return through the panel's own button ------
+- tapOn:
+    text: "Sign in"
+    waitUntilVisible: true
+- tapOn:
+    text: "you@example.com"
+    waitUntilVisible: true
+- inputText: "${TEST_EMAIL}"
+- hideKeyboard
+- tapOn:
+    text: "Next"
+    waitUntilVisible: true
+- tapOn:
+    text: "Your password"
+    waitUntilVisible: true
+- inputText: "${TEST_PASSWORD}"
+- hideKeyboard
+- takeScreenshot: 11-return-password-step
+- tapOn:
+    text: "Continue with email"
+    waitUntilVisible: true
+# The return lands back on the planner (hash survival, the
+# verdict's read); the queue is the first standing proof — the
+# reprobe's poll stood at beat 2 (~10 s), the budget is the
+# harness poll's own outer bound.
+- extendedWaitUntil:
+    visible:
+      text: "Sim drive post one"
+    timeout: 60000
+- assertVisible:
+    text: "Sim Drive Brand"
+- takeScreenshot: 12-return-queue-stands
+# The identity line stands again, on Home.
+- tapOn:
+    id: "menuBtn"
+- tapOn:
+    text: "Your Socials"
+    waitUntilVisible: true
+- extendedWaitUntil:
+    visible:
+      text: "Signed in as ${TEST_EMAIL}"
+    timeout: 60000
+- takeScreenshot: 13-return-identity
+# ---------- sign out again (standing on Home; no bonus here) -------
+- tapOn:
+    id: "menuBtn"
+- tapOn:
+    text: "Sign out"
+    waitUntilVisible: true
+- extendedWaitUntil:
+    visible:
+      text: "Sign in or make your account"
+    timeout: 60000
+- takeScreenshot: 14-signed-out-again
+# ---------- stage (v): the second account — isolation -------------
+- tapOn:
+    text: "you@example.com"
+    waitUntilVisible: true
+- inputText: "${TEST_EMAIL2}"
+- hideKeyboard
+- tapOn:
+    text: "Next"
+    waitUntilVisible: true
+- tapOn:
+    text: "Your password"
+    waitUntilVisible: true
+- inputText: "${TEST_PASSWORD2}"
+- hideKeyboard
+- tapOn:
+    text: "Continue with email"
+    waitUntilVisible: true
+- extendedWaitUntil:
+    visible:
+      text: "Your Socials"
+    timeout: 90000
+# The fresh account's tour stands on its first entry too; the
+# identity assertion comes first, in the same paint, then the
+# tour is skipped by the same control.
+- assertVisible:
+    text: "Signed in as ${TEST_EMAIL2}"
+- tapOn:
+    text: "Skip tour"
+    waitUntilVisible: true
+- extendedWaitUntil:
+    notVisible:
+      text: "What's your name?"
+    timeout: 30000
+- takeScreenshot: 15-second-account-in
+# Isolation, Home side: this space names its own account, and the
+# first account's identity and data never render here.
+- assertNotVisible:
+    text: "${TEST_EMAIL}"
+- assertNotVisible:
+    text: "Sim Drive Brand"
+- assertNotVisible:
+    text: "Sim drive post one"
+- takeScreenshot: 16-isolation-home
+# Isolation, planner side: this account's queue stands at the
+# shipped empty state; the first account's post never renders.
+- tapOn:
+    id: "menuBtn"
+- tapOn:
+    text: "Planner"
+    waitUntilVisible: true
+- extendedWaitUntil:
+    visible:
+      text: "Nothing in your queue yet. Plan your first post and it will wait here, in your order."
+    timeout: 60000
+- assertNotVisible:
+    text: "Sim drive post one"
+- assertNotVisible:
+    text: "Sim Drive Brand"
+- takeScreenshot: 17-isolation-planner
+# ---------- stage (vi): the delete leg is NOT in this flow ---------
+# Per the registered spine shape, deletion runs from QA's chair
+# against the real backend, not in Maestro — and on this app the
+# road is PROVEN end to end on build 18 (rf-b18-leg-delete.js +
+# verdict-ruefly-b18-retest.md): in the app, Account (#/account)
+# -> #acctDelete -> the dialog's password field (#deletePw) ->
+# #deleteConfirm -> the app returns to the door, which speaks
+# "Your account has been deleted." The close is Security's
+# owner-side full-footprint read at 404 — Auth absent · the
+# profile doc 404 · all eleven walk collections zero ·
+# _meta/app 404 · _meta/worker 404 · _unlocks/{uid} 404 ·
+# _entitlements/{uid} 404 (Security's addendum to the b18 delete
+# leg) — executed and reported beside this drive's SIMULATOR
+# results, never inside them. The spine accounts' closes ride
+# that same proven shape at QA's chair after the drive.
