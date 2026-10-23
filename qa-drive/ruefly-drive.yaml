@@ -1,5 +1,5 @@
 # Ruefly 20 simulator drive — QA Tester chair.
-# Version: v22 (2026-10-24) — v9's IDENTITY CURE LANDED on
+# Version: v23 (2026-10-24) — v9's IDENTITY CURE LANDED on
 # drive 9 (run 39969500909): the entry landed straight on
 # the named home ("Hello," + "Sim Driver RF" standing as
 # their own nodes, the address its own node beside "Signed
@@ -624,9 +624,20 @@ appId: shop.ilseplacencia.socials
       - tapOn:
           point: "23%, 23%"
       - waitForAnimationToEnd
+# DRIVE 22 (run 40024158146) reached this wait standing ON
+# HOME: the point tap worked (v22's cure proven) — banner
+# "Your Socials", "Hello, Sim Driver RF" in the death
+# hierarchy — and the wait still died, because the return
+# paint carries NO "Signed in as" node (that line stands
+# on the fresh sign-up paint, where the step-290 assert
+# proves it; the return lands via the planner nav and
+# greets by name instead). THE INVENTED KEY, return-leg
+# form. Cure (v23): the return identity judge is the
+# greeting's own name node — present only while THIS
+# account is signed in.
 - extendedWaitUntil:
     visible:
-      text: "Signed in as"
+      text: "Sim Driver RF"
     timeout: 60000
 - takeScreenshot: 13-return-identity
 # ---------- sign out again (standing on Home; no bonus here) -------
