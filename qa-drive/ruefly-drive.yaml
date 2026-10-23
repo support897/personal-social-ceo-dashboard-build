@@ -1,4 +1,14 @@
 # Ruefly 20 simulator drive — QA Tester chair.
+# Version: v6 (2026-10-23) — v5 was overtaken before it ever
+# ran: drive 5 (on v4) showed the RETURNING entry's true shape
+# — a name SHEET ("What's your name?" as its own node, Save by
+# measured point) instead of the fresh entry's tour CARD. v6
+# handles both shapes at leg (i) and the re-login: the sheet
+# gets the sentinel name SAVED, the card is skipped; the entry
+# settles on the "Your account" pill first. Drive 5 also
+# CONFIRMED the full-node class from the other side: its
+# fragment wait PASSED here because this sheet's heading node
+# is exactly the fragment. v5: (landed, never ran).
 # Version: v5 (2026-10-23) — the FULL-NODE MATCHING completion
 # (class proven on Fit drive 4 the same hour): the entry-proof
 # selectors carry Rue's complete heading "Hi! I'm Rue.
@@ -110,31 +120,56 @@ appId: shop.ilseplacencia.socials
     text: "Continue with email"
     waitUntilVisible: true
     retryTapIfNoChange: true
-# Inside proof: on a FRESH account the first inside surface is
-# the TOUR sheet, and while it stands the sim's tree shows the
-# sheet ALONE (modal tree occlusion — drive 4's hierarchy held
-# the tour heading and nothing of the home behind it, though
-# the pixels showed both). Entry is proven on the name ask;
-# the home's proofs run after the skip re-exposes them.
+# Inside proof: TWO entry shapes stand in the evidence. A
+# FRESH account meets the tour CARD (the composed greeting
+# node; drive 4). A RETURNING account whose name was never
+# saved meets the name SHEET (drive 5's failure frame): its own
+# heading node reads exactly "What's your name?", over the
+# re-exposed home, with the "Your name" field and Save / Not
+# now buttons that the tree does NOT carry as text nodes —
+# Save is tapped by its measured point (74%, 60%). Settle on
+# the account pill first (it stands in the tree in both
+# shapes), then handle whichever shape stands: the sheet gets
+# the spine's sentinel name, SAVED; the card is skipped by its
+# own control. The home's proofs run after.
 - extendedWaitUntil:
     visible:
-      text: "Hi! I'm Rue. Welcome in! What's your name?"
+      text: "Your account"
     timeout: 90000
-- takeScreenshot: 03-inside-tour
-# The name field auto-focuses with the keyboard up and the bar
-# stands over the sheet's bottom row: drop it first (the
-# fleet's measured tick), then skip by the tour's own control.
-- tapOn:
-    point: "90%, 59%"
-- tapOn:
-    text: "Skip tour"
-    waitUntilVisible: true
-    retryTapIfNoChange: true
-- extendedWaitUntil:
-    notVisible:
-      text: "Hi! I'm Rue. Welcome in! What's your name?"
-    timeout: 30000
-- takeScreenshot: 04-tour-skipped
+- runFlow:
+    when:
+      visible: "What's your name?"
+    commands:
+      - tapOn:
+          text: "Your name"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
+      - inputText: "Sim Driver RF"
+      - tapOn:
+          point: "90%, 59%"
+      - tapOn:
+          point: "74%, 60%"
+      - extendedWaitUntil:
+          notVisible:
+            text: "What's your name?"
+          timeout: 30000
+      - takeScreenshot: 03-name-saved
+- runFlow:
+    when:
+      visible: "Hi! I'm Rue. Welcome in! What's your name?"
+    commands:
+      - tapOn:
+          point: "90%, 59%"
+      - tapOn:
+          text: "Skip tour"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - extendedWaitUntil:
+          notVisible:
+            text: "Hi! I'm Rue. Welcome in! What's your name?"
+          timeout: 30000
+      - takeScreenshot: 04-tour-skipped
 # ---------- the identity line (F-RF17-1's cure surface) -------------
 # Home's ONE-LOAD paint names the signed-in account: the b18
 # identity leg's criterion, asserted here on the re-exposed
@@ -253,6 +288,26 @@ appId: shop.ilseplacencia.socials
     text: "Continue with email"
     waitUntilVisible: true
     retryTapIfNoChange: true
+# A returning name sheet, if one stands on this entry, is
+# handled exactly as at leg (i) before the planner proof.
+- runFlow:
+    when:
+      visible: "What's your name?"
+    commands:
+      - tapOn:
+          text: "Your name"
+          waitUntilVisible: true
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
+      - inputText: "Sim Driver RF"
+      - tapOn:
+          point: "90%, 59%"
+      - tapOn:
+          point: "74%, 60%"
+      - extendedWaitUntil:
+          notVisible:
+            text: "What's your name?"
+          timeout: 30000
 # The return lands back on the planner (hash survival, the
 # verdict's read); the queue is the first standing proof — the
 # reprobe's poll stood at beat 2 (~10 s), the budget is the
