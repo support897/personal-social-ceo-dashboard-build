@@ -313,8 +313,17 @@ appId: shop.ilseplacencia.socials
     text: "Brand name"
     waitUntilVisible: true
 - inputText: "Sim Drive Brand"
+# DRIVE 17 (run 40000895314): the fixed (90%, 62%) dismissal
+# point is STALE on the composer — drive 17's own hierarchy
+# measures the accessory tick as a named node, "Done", at
+# [341,486][381,524] (centre 89.8%, 57.8%); the 62% point fell
+# a row low, typed a stray "E" into the caption and left the
+# keyboard standing over Cancel. Tap the tick BY NAME — the
+# node cannot drift. (Composer sites only; the door fields'
+# points are proven on their own geometry and stand.)
 - tapOn:
-    point: "90%, 62%"  # WKWebView accessory Done (hideKeyboard class cure)
+    text: "Done"
+    waitUntilVisible: true
 - takeScreenshot: 07-composer-brand
 - tapOn:
     text: "Add a brand"
@@ -324,7 +333,8 @@ appId: shop.ilseplacencia.socials
     waitUntilVisible: true
 - inputText: "Sim drive post one"
 - tapOn:
-    point: "90%, 62%"  # WKWebView accessory Done (hideKeyboard class cure)
+    text: "Done"
+    waitUntilVisible: true
 - takeScreenshot: 08-composer-post
 - tapOn:
     text: "Save"
