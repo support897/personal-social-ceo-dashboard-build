@@ -1,4 +1,18 @@
 # Ruefly 20 simulator drive — QA Tester chair.
+# Version: v7 (2026-10-23) — v6 died at drive 6 (run
+# 39957795498, step-015) at leg (i)'s tree guard, in tree
+# lag's extreme form: the failure hierarchy holds SEVEN texts
+# (the app title + the status bar) — the WebView's whole
+# content tree stood EMPTY for the guard's full 60 s while the
+# pixels showed the finished password step (02: 20 bullets,
+# the button rendered, the bar dismissed). A longer stare at a
+# stale snapshot does not heal it; a gesture rebuilds the
+# tree. v7 inserts a settle + one UP swipe (a no-op on this
+# fixed door layout, a refresh for the tree) before each of
+# the three "Continue with email" guards, and widens them to
+# 90 s. If a later drive still reads an empty tree after the
+# swipe, the named next step is a mid-flow relaunch, not more
+# waiting.
 # Version: v6 (2026-10-23) — v5 was overtaken before it ever
 # ran: drive 5 (on v4) showed the RETURNING entry's true shape
 # — a name SHEET ("What's your name?" as its own node, Save by
@@ -112,10 +126,13 @@ appId: shop.ilseplacencia.socials
 # TREE-LAG GUARD (drive 3): the WebView accessibility tree can
 # stand EMPTY mid-transition while the pixels already show the
 # step — wait for the button IN THE TREE before tapping it.
+- waitForAnimationToEnd
+- swipe:
+    direction: UP
 - extendedWaitUntil:
     visible:
       text: "Continue with email"
-    timeout: 60000
+    timeout: 90000
 - tapOn:
     text: "Continue with email"
     waitUntilVisible: true
@@ -280,10 +297,13 @@ appId: shop.ilseplacencia.socials
 # TREE-LAG GUARD (drive 3): the WebView accessibility tree can
 # stand EMPTY mid-transition while the pixels already show the
 # step — wait for the button IN THE TREE before tapping it.
+- waitForAnimationToEnd
+- swipe:
+    direction: UP
 - extendedWaitUntil:
     visible:
       text: "Continue with email"
-    timeout: 60000
+    timeout: 90000
 - tapOn:
     text: "Continue with email"
     waitUntilVisible: true
@@ -360,10 +380,13 @@ appId: shop.ilseplacencia.socials
 # TREE-LAG GUARD (drive 3): the WebView accessibility tree can
 # stand EMPTY mid-transition while the pixels already show the
 # step — wait for the button IN THE TREE before tapping it.
+- waitForAnimationToEnd
+- swipe:
+    direction: UP
 - extendedWaitUntil:
     visible:
       text: "Continue with email"
-    timeout: 60000
+    timeout: 90000
 - tapOn:
     text: "Continue with email"
     waitUntilVisible: true
