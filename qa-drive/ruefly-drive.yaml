@@ -1,5 +1,5 @@
 # Ruefly 20 simulator drive — QA Tester chair.
-# Version: v21 (2026-10-24) — v9's IDENTITY CURE LANDED on
+# Version: v22 (2026-10-24) — v9's IDENTITY CURE LANDED on
 # drive 9 (run 39969500909): the entry landed straight on
 # the named home ("Hello," + "Sim Driver RF" standing as
 # their own nodes, the address its own node beside "Signed
@@ -597,20 +597,32 @@ appId: shop.ilseplacencia.socials
 # the tap, plus one staggered retry keyed on the Planner-only
 # "Your queue" heading — it stands in the tree under the open
 # sidebar exactly in the failure state, and never on Home.
+# DRIVE 21 (run 40020952808) died at this identity wait,
+# step-092, the sidebar standing FULLY OPEN in the death
+# hierarchy: both v17 taps (the item tap and the
+# "Your queue"-keyed retry) executed and navigation never
+# took — the item-tap modality itself is what this row
+# eats. Cure (v22): a sidebar-standing proof wait first
+# ("Sign out" exists only inside the open sidebar), then
+# the nav tap by POINT at the row's measured centre from
+# the death hierarchy ("Your Socials" [51,188][134,208]
+# -> (23%, 23%)), and the retry by the same point.
 - tapOn:
     text: "Collapse or open the sidebar"
 - waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      text: "Sign out"
+    timeout: 30000
 - tapOn:
-    text: "Your Socials"
-    waitUntilVisible: true
+    point: "23%, 23%"
 - waitForAnimationToEnd
 - runFlow:
     when:
       visible: "Your queue"
     commands:
       - tapOn:
-          text: "Your Socials"
-          waitUntilVisible: true
+          point: "23%, 23%"
       - waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
@@ -625,6 +637,10 @@ appId: shop.ilseplacencia.socials
 - tapOn:
     text: "Collapse or open the sidebar"
 - waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      text: "Sign out"
+    timeout: 30000
 - tapOn:
     text: "Sign out"
     waitUntilVisible: true
